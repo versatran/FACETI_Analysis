@@ -309,17 +309,20 @@ function pushPreviousShot_Callback(~, ~, handles)
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
     
-    if (j == 1)   % when the shot number is at the beginning of a 
-                  % stack, move to previous stack (if one exists)
+    if (j == 1)
+        % if going to a new stack change camera structure if using energy camera
         if camera.energy_camera 
-            if exist('variable_bend', 'var')
-                camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
-                camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
+            if (isfield(bend_struc, 'variable_bend') && ...
+                    bend_struc.variable_bend)
+                camera.dipole_bend = bend_struc.dipole_multiplier_values(i - 1);
+                camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i - 1);                        
             end
             if camera.dipole_bend ~= 1
-                stack_text{i} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
-                    ', ' stack_text{i}];
-                setappdata(0, 'stack_text', stack_text);
+                if ~contains(stack_text{i - 1}, 'Dipole')
+                    stack_text{i - 1} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
+                        ', ' stack_text{i - 1}];
+                    setappdata(0, 'stack_text', stack_text);
+                end
             end
         end
     end
@@ -368,18 +371,20 @@ function pushNextShot_Callback(~, ~, handles)
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
     
-    if (j == num_images || (j == 1 && i == 1))
-        % if going to a new stack change camera structure if using energy camera  
-        % also accounts for the first stack
-        if camera.energy_camera 
-            if exist('variable_bend', 'var')
-                camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
-                camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);
+    if j == num_images
+        % if going to a new stack change camera structure if using energy camera
+        if camera.energy_camera
+            if (isfield(bend_struc, 'variable_bend') && ...
+                    bend_struc.variable_bend)
+                camera.dipole_bend = bend_struc.dipole_multiplier_values(i + 1);
+                camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i + 1);
             end
             if camera.dipole_bend ~= 1
-                stack_text{i} = ['Dipole=' num2str(camera.dipole_bend,2) ...
-                    ', ' stack_text{i}];
-                setappdata(0, 'stack_text', stack_text);
+                if ~contains(stack_text{i + 1}, 'Dipole')
+                    stack_text{i + 1} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
+                        ', ' stack_text{i + 1}];
+                    setappdata(0, 'stack_text', stack_text);
+                end
             end
         end
     end
@@ -433,7 +438,8 @@ function menuViewAll_Callback(~, ~, ~)
         % if going to a new stack change camera structure if using energy camera  
         % also acounts for the first stack
         if camera.energy_camera 
-            if exist('variable_bend','var')
+            if (isfield(bend_struc, 'variable_bend') && ...
+                    bend_struc.variable_bend)
                 camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
                 camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
             end
@@ -782,6 +788,7 @@ function jumpToShotButton_Callback(hObject, ~, handles)
     j = str2double(get(handles.editGoToShot, 'String'));
     if (~isnan(i) && ~isnan(j) && validImageIndices(i, j))
         % image indices are valid - jump to the requested image
+        newStack = i ~= getappdata(0, 'i');   % indicates jumping to a new stack
         setappdata(0, 'i', i);
         setappdata(0, 'j', j);
         
@@ -793,18 +800,21 @@ function jumpToShotButton_Callback(hObject, ~, handles)
            set(handles.pushPreviousShot, 'Visible', 'on');
         end
 
-        if (j == num_images || j == 1) 
+        if newStack
             % if going to a new stack change camera structure if using energy 
             % camera also acounts for the first stack
             if camera.energy_camera 
-                if exist('variable_bend', 'var')
+                if (isfield(bend_struc, 'variable_bend') && ...
+                        bend_struc.variable_bend)
                     camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
                     camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
                 end
                 if camera.dipole_bend ~= 1
-                    stack_text{i} = ['Dipole=' ...
-                        num2str(camera.dipole_bend, 2) ', ' stack_text{i}];
-                    setappdata(0, 'stack_text', stack_text);
+                    if ~contains(stack_text{i}, 'Dipole')
+                        stack_text{i} = ['Dipole=' ...
+                            num2str(camera.dipole_bend, 2) ', ' stack_text{i}];
+                        setappdata(0, 'stack_text', stack_text);
+                    end
                 end
             end
         end

@@ -8,6 +8,9 @@
 % image_stack=cell{num_stacks,num_images};
 
 if ~background_checked
+    
+    % get necessary variables
+    bend_struc = getappdata(0, 'bend_struc');
 
     %TODO: Check that this code works with a QS-scan like DAQ
     bkgrndstr = fullfile(prefix, image_struc.background_dat{curr_image});
@@ -144,7 +147,7 @@ if ~background_checked
     
     %If this is not reset, the energy vector for the next bend will
     %not be produced
-    if ~exist('variable_bend','var')
+    if (~isfield(bend_struc, 'variable_bend') || ~bend_struc.variable_bend)
         background_checked=1;
     end
 

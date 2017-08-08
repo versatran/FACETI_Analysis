@@ -55,10 +55,10 @@ function [prefix, num_stacks, image_struc, num_images, stack_text, func_name,...
                 data.raw.metadata.param.dat{1}.PV_scan_list;
             warning(['This is a bend scan, dipole bend and zero GeV values ' ...
                 'will vary and need to be checked']);
-            for iii = 1:length(bend_values)
+            for iii = 1:length(bend_struc.bend_values)
                 bend_struc.dipole_multiplier_values(iii) = ...
-                    (20.35 + bend_values(iii)) / 20.35;
-                switch(bend_values(iii))
+                    (20.35 + bend_struc.bend_values(iii)) / 20.35;
+                switch(bend_struc.bend_values(iii))
                     case -16
                         zero_Gev_px_vector(iii) = 149; %For Apr 6, QSBend -16                    
                     case -14

@@ -159,7 +159,7 @@ function pushLoadImages_Callback(hObject, ~, handles)
     setappdata(0, 'j', j);
 
     if camera.energy_camera 
-        if exist('variable_bend', 'var')
+        if (isfield(bend_struc, 'variable_bend') && bend_struc.variable_bend)
             camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
             camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
         end

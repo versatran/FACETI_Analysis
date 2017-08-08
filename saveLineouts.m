@@ -79,13 +79,14 @@ mBox = msgbox('Starting lineout process. One moment, please...');
 % go over scan steps, if no scan, only one loop iteration
 for i = 1:num_stacks
     if camera.energy_camera 
-        if exist('variable_bend','var')
+        if (isfield(bend_struc, 'variable_bend') && bend_struc.variable_bend)
             camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
-            zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
+            camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
         end
         if camera.dipole_bend ~= 1
             stack_text{i} = ['Dipole=' num2str(camera.dipole_bend,2) ', ' ...
                 stack_text{i}];
+            setappdata(0, 'stack_text', stack_text);
         end
     end
     % go through images in each scan step

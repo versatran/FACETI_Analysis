@@ -192,7 +192,7 @@ if ~background_checked
     
     % if this is not reset, the energy vector for the next bend will
     % not be produced
-    if ~exist('variable_bend', 'var')
+    if (~isfield(bend_struc, 'variable_bend') || ~bend_struc.variable_bend)
         setappdata(0, 'background_checked', 1);
     end
 end

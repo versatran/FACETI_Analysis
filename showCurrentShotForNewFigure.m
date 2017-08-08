@@ -5,17 +5,19 @@
 
 camera = getappdata(0, 'camera');
 dataset_str = getappdata(0, 'dataset_str');
+bend_struc = getappdata(0, 'bend_struc');
 i = getappdata(0, 'i');
 j = getappdata(0, 'j');
 
 if camera.energy_camera 
-    if exist('variable_bend', 'var')
+    if (isfield(bend_struc, 'variable_bend') && bend_struc.variable_bend)
         camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
-        zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
+        camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
     end
     if camera.dipole_bend ~= 1
         stack_text{i} = ['Dipole=' num2str(camera.dipole_bend,2) ', ' ...
             stack_text{i}];
+        setappdata(0, 'stack_text', stack_text);
     end
 end
 % sets current image to be used by load_noiseless_images_15_edited
