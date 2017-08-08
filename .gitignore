@@ -1,0 +1,2 @@
+# Ignore any files that match the following patterns:
+.DS_Store
