@@ -167,7 +167,7 @@ if show_image % fix for odd(1) or even(0)
 end
         
 % linearizes by allowing user to select region of interest
-if (linearize)
+if linearize
     if (camera.energy_camera && ~check_linearize_ROI)    
         message = sprintf(['Please select region of interest to adjust ' ...
             'energy axis.\n Then double click on selection.']);
