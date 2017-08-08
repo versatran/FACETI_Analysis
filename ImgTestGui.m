@@ -128,21 +128,8 @@ function figureImgTestGui_CloseRequestFcn(hObject, ~, ~)
     % fixed by setting the variables using setappdata(figureImgTestGui...)
     % which automatically deletes variables when the program closes.
     
-    % inform user that any processed data is about to be saved
-    dialogue = msgbox('Saving data, one moment please...');
-    
-    % save processed_data
-    saveProcessedData();
-    
     % delete app data
     deleteAppData();
-    
-    % close dialgue box if user has not already closed it
-    try
-        close(dialogue);
-    catch
-        % user already closed the dialgue box
-    end
 
     % close figure
     delete(hObject);
@@ -232,27 +219,6 @@ end
 
 
 function pushLoadDataSet_Callback(~, ~, ~)
-    % if another dataset was just being displayed, save any processed data
-    % from that dataset before loading the new dataset
-    if (isappdata(0, 'processed_data'))
-        % inform user that data is about to be saved
-        dialogue = msgbox(['Saving data from previous dataset, one moment ' ...
-            'please...']);
-        
-        % save data
-        saveProcessedData();
-        
-        % remove old processed_data
-        rmappdata(0, 'processed_data');
-        
-        % close the dialogue if the user did not already close it
-        try
-            close(dialogue);
-        catch
-            % user already closed dialogue
-        end
-    end
-
     % inform user that camera selection dialog will pop up soon
     m1 = msgbox('Loading data, one moment please...');
 
@@ -268,9 +234,6 @@ function pushLoadDataSet_Callback(~, ~, ~)
         filesep date_str filesep expt_str '_' dataset_str filesep expt_str ...
         '_' dataset_str '.mat'];
     setappdata(0, 'data_path', data_path);
-    
-    % load processed data, if it exists
-    loadProcessedData();
 
     % load data
     data = E200_load_data(data_path, expt_str);
