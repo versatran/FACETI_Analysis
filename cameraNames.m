@@ -32,7 +32,7 @@ function varargout = cameraNames(varargin)
                        'gui_OutputFcn',  @cameraNames_OutputFcn, ...
                        'gui_LayoutFcn',  [] , ...
                        'gui_Callback',   []);
-    if nargin && ischar(varargin{1})
+    if (nargin && ischar(varargin{1}))
         gui_State.gui_Callback = str2func(varargin{1});
     end
 

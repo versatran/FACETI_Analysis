@@ -32,7 +32,7 @@ function varargout = lineouts(varargin)
                        'gui_OutputFcn',  @lineouts_OutputFcn, ...
                        'gui_LayoutFcn',  [] , ...
                        'gui_Callback',   []);
-    if nargin && ischar(varargin{1})
+    if (nargin && ischar(varargin{1}))
         gui_State.gui_Callback = str2func(varargin{1});
     end
 
@@ -142,15 +142,15 @@ function pushPreviousShot_Callback(~, ~, handles)
             end
             if camera.dipole_bend ~= 1
                 if ~contains(stack_text{i - 1}, 'Dipole')
-                    stack_text{i - 1} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
-                        ', ' stack_text{i - 1}];
+                    stack_text{i - 1} = ['Dipole=' ...
+                        num2str(camera.dipole_bend, 2) ', ' stack_text{i - 1}];
                     setappdata(0, 'stack_text', stack_text);
                 end
             end
         end
     end
     
-    if (j > 2)
+    if j > 2
         % there is a previous image to display
         j = j - 1;
         setappdata(0, 'j', j);
@@ -163,7 +163,7 @@ function pushPreviousShot_Callback(~, ~, handles)
         j = j - 1;
         setappdata(0, 'j', j);
         showImageLineout;
-    elseif (j == 2)
+    elseif j == 2
         % there are more stacks before the current one, so do not hide the
         % 'Push Previous Shot' button
         j = j - 1;
@@ -204,8 +204,8 @@ function pushNextShot_Callback(~, ~, handles)
             end
             if camera.dipole_bend ~= 1
                 if ~contains(stack_text{i + 1}, 'Dipole')
-                    stack_text{i + 1} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
-                        ', ' stack_text{i + 1}];
+                    stack_text{i + 1} = ['Dipole=' ...
+                        num2str(camera.dipole_bend, 2) ', ' stack_text{i + 1}];
                     setappdata(0, 'stack_text', stack_text);
                 end
             end
@@ -219,9 +219,9 @@ function pushNextShot_Callback(~, ~, handles)
         set(handles.pushNextShot, 'Visible', 'off');
     end
     
-    if (j == num_images)
+    if j == num_images
         % the last image of a stack is currently being displayed
-        if (i < num_stacks)
+        if i < num_stacks
             % there are more stacks, so go to the next one
             i = i + 1;
             j = 1;
@@ -243,13 +243,13 @@ function menuSaveLineouts_Callback(~, ~, ~)
     saveLineouts;
 end
 
-function editGoToShot_Callback(hObject, ~, ~)
+function editGoToShot_Callback(~, ~, ~)
 end
 
-function editOfStack_Callback(hObject, ~, handles)
+function editOfStack_Callback(~, ~, ~)
 end
 
-function jumpToShotButton_Callback(hObject, eventdata, handles)
+function jumpToShotButton_Callback(~, ~, handles)
     % get necessary variables
     camera = getappdata(0, 'camera');
     num_stacks = getappdata(0, 'num_stacks');

@@ -10,7 +10,7 @@ function varargout = ImgTestGui(varargin)
                        'gui_OutputFcn',  @ImgTestGui_OutputFcn, ...
                        'gui_LayoutFcn',  [] , ...
                        'gui_Callback',   []);
-    if nargin && ischar(varargin{1})
+    if (nargin && ischar(varargin{1}))
         gui_State.gui_Callback = str2func(varargin{1});
     end
     if nargout
@@ -309,8 +309,9 @@ function pushPreviousShot_Callback(~, ~, handles)
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
     
-    if (j == 1)
-        % if going to a new stack change camera structure if using energy camera
+    if j == 1
+        % if going to a new stack change camera structure if using energy
+        % camera
         if camera.energy_camera 
             if (isfield(bend_struc, 'variable_bend') && ...
                     bend_struc.variable_bend)
@@ -319,15 +320,15 @@ function pushPreviousShot_Callback(~, ~, handles)
             end
             if camera.dipole_bend ~= 1
                 if ~contains(stack_text{i - 1}, 'Dipole')
-                    stack_text{i - 1} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
-                        ', ' stack_text{i - 1}];
+                    stack_text{i - 1} = ['Dipole=' ...
+                        num2str(camera.dipole_bend, 2) ', ' stack_text{i - 1}];
                     setappdata(0, 'stack_text', stack_text);
                 end
             end
         end
     end
     
-    if (j > 2)
+    if j > 2
         % there is a previous image in the current stack to display
         j = j - 1;
         setappdata(0, 'j', j);
@@ -340,7 +341,7 @@ function pushPreviousShot_Callback(~, ~, handles)
         j = j - 1;
         setappdata(0, 'j', j);
         ImgTestGui_ShowImage;
-    elseif (j == 2)
+    elseif j == 2
         % there are more stacks before the current one, so do not hide the
         % 'Push Previous Shot' button
         j = j - 1;
@@ -372,7 +373,8 @@ function pushNextShot_Callback(~, ~, handles)
     j = getappdata(0, 'j');
     
     if j == num_images
-        % if going to a new stack change camera structure if using energy camera
+        % if going to a new stack change camera structure if using energy
+        % camera
         if camera.energy_camera
             if (isfield(bend_struc, 'variable_bend') && ...
                     bend_struc.variable_bend)
@@ -381,8 +383,8 @@ function pushNextShot_Callback(~, ~, handles)
             end
             if camera.dipole_bend ~= 1
                 if ~contains(stack_text{i + 1}, 'Dipole')
-                    stack_text{i + 1} = ['Dipole=' num2str(camera.dipole_bend, 2) ...
-                        ', ' stack_text{i + 1}];
+                    stack_text{i + 1} = ['Dipole=' ...
+                        num2str(camera.dipole_bend, 2) ', ' stack_text{i + 1}];
                     setappdata(0, 'stack_text', stack_text);
                 end
             end
@@ -396,9 +398,9 @@ function pushNextShot_Callback(~, ~, handles)
         set(handles.pushNextShot, 'Visible', 'off');
     end
     
-    if (j == num_images)
+    if j == num_images
         % the last image of a stack is currently being displayed
-        if (i < num_stacks)
+        if i < num_stacks
             % there are more stacks, so go to the next one
             i = i + 1;
             j = 1;
@@ -443,9 +445,9 @@ function menuViewAll_Callback(~, ~, ~)
                 camera.dipole_bend = bend_struc.dipole_multiplier_values(i);
                 camera.zero_Gev_px = bend_struc.zero_Gev_px_vector(i);                        
             end
-            if camera.dipole_bend~=1
-                stack_text{i}=['Dipole=' num2str(camera.dipole_bend,2) ', ' ...
-                    stack_text{i}];
+            if camera.dipole_bend ~= 1
+                stack_text{i} = ['Dipole=' ...
+                    num2str(camera.dipole_bend,2) ', ' stack_text{i}];
                 setappdata(0, 'stack_text', stack_text);
             end
         end   
@@ -462,12 +464,13 @@ function menuViewAll_Callback(~, ~, ~)
                 j = index_sorted_UID(counter);
                 curr_image = j;
                 setappdata(0, 'curr_image', curr_image);
+                
                 load_noiseless_images_15_edited;
 
                 this_image = getappdata(0, 'this_image');
                 %%%%%%%%%%%%%%%%%
                 % show the image 
-                %         if show_image && mod(j,2)==1 %Fix For odd(1) or even(0)
+                %     if show_image && mod(j,2)==1 %Fix For odd(1) or even(0)
                 if counter == 1 
                     main_canvas = figure(40);
                     subplot_rows = ceil(num_img_shown / subplot_columns);
@@ -499,33 +502,34 @@ function menuViewAll_Callback(~, ~, ~)
                 disp(num2str(j));
             end
         otherwise
-            for j=1:num_img_shown        
-                curr_image= j;
+            for j = 1:num_img_shown        
+                curr_image = j;
                 setappdata(0, 'curr_image', curr_image);
+                
                 load_noiseless_images_15_edited;
 
                 this_image = getappdata(0, 'this_image');
                 %%%%%%%%%%%%%%%%%
                 % show the image 
-                %         if show_image && mod(j,2)==1 %Fix For odd(1) or even(0)
-                if counter ==1 
-                    main_canvas=figure(40);
-                    subplot_rows=ceil(num_img_shown/subplot_columns);
+                %     if show_image && mod(j,2)==1 %Fix For odd(1) or even(0)
+                if counter == 1 
+                    main_canvas = figure(40);
+                    subplot_rows = ceil(num_img_shown / subplot_columns);
 
-                    set(main_canvas,'position',[100 350 500 500])
+                    set(main_canvas, 'position', [100 350 500 500])
                     movegui(40);
-        %             set(gca,'position',[0.02 0.02 0.96 0.96])
+                    % set(gca, 'position', [0.02 0.02 0.96 0.96])
                 end
 
-                subplot(subplot_rows,subplot_columns,j)
+                subplot(subplot_rows, subplot_columns, j)
                 % make the original image if diagnostic is on, otherwise work
                 % only with linearized (or otherwise processed?) image
                 if camera.energy_camera
                     imagesc(this_image)
-                    energy_pixel= getappdata(0, 'energy_pixel');
+                    energy_pixel = getappdata(0, 'energy_pixel');
                     energy_ticks = getappdata(0, 'energy_ticks');
-                    set(gca,'YTick',energy_pixel);
-                    set(gca,'YTickLabel',energy_ticks);            
+                    set(gca, 'YTick', energy_pixel);
+                    set(gca, 'YTickLabel', energy_ticks);            
                 else
                     imagesc(this_image)
                 end        
@@ -542,11 +546,13 @@ end
 % Creates lineouts for each shot and saves them in data structure
 function menuSaveLineouts_Callback(~, ~, ~)
     dataset_str = getappdata(0, 'dataset_str');
-    outputdir=['E:/Sorting Output Directory/' dataset_str '/'];
-    % outputdir=['/Users/Navid/Library/Mobile Documents/com~apple~CloudDocs/Lab Work/' date_str(1:4) ' FACET Analysis/'];
-    % for confirmation of outputdir but not needed when only saving lineouts in
-    % data structure
-    % q1  = questdlg(['The output directory is ' outputdir '  Would you like to change it?']);
+    outputdir = ['E:/Sorting Output Directory/' dataset_str '/'];
+    % outputdir = ['/Users/Navid/Library/Mobile Documents/' ...
+    %    'com~apple~CloudDocs/Lab Work/' date_str(1:4) ' FACET Analysis/'];
+    % % for confirmation of outputdir but not needed when only saving lineouts in
+    % % data structure
+    % q1 = questdlg(['The output directory is ' outputdir ...
+    %     ' Would you like to change it?']);
     % switch q1
     %     case 'Yes'
     %         q1 = uigetdir;
@@ -555,7 +561,8 @@ function menuSaveLineouts_Callback(~, ~, ~)
     %     case 'No'
     %         saveLineouts;
     %     otherwise   
-    %         msgbox('Please confirm the output directory where data wil be saved');
+    %         msgbox(['Please confirm the output directory where ' ...
+    %             'data will be saved']);
     % end
     setappdata(0, 'outputdir', outputdir);
     saveLineouts;
@@ -776,7 +783,7 @@ function changeSourceDirectoryButton_Callback(~, eventdata, handles)
     setappdata(0, 'source_dir', source_dir);
 end
 
-function jumpToShotButton_Callback(hObject, ~, handles)
+function jumpToShotButton_Callback(~, ~, handles)
     % get necessary variables
     camera = getappdata(0, 'camera');
     num_stacks = getappdata(0, 'num_stacks');
@@ -858,14 +865,8 @@ function jumpToShotButton_Callback(hObject, ~, handles)
     end
 end
 
-% --- Executes on key press with focus on figureImgTestGui or any of its controls.
-function figureImgTestGui_WindowKeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to figureImgTestGui (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
+% Executes on key press with focus on figureImgTestGui or any of its controls.
+function figureImgTestGui_WindowKeyPressFcn(~, eventdata, handles)
     key = eventdata.Key;
     if (strcmp(key, 'rightarrow') && ...
             strcmp(get(handles.pushNextShot, 'Visible'), 'on') && ...
