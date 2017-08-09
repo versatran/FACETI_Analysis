@@ -128,8 +128,18 @@ function figureImgTestGui_CloseRequestFcn(hObject, ~, ~)
     % fixed by setting the variables using setappdata(figureImgTestGui...)
     % which automatically deletes variables when the program closes.
     
+    % inform user that the application is closing
+    dialogue = msgbox('Cleaning up...');
+    
     % delete app data
     deleteAppData();
+    
+    % close the dialogue if it is still open
+    try
+        close(dialogue);
+    catch
+        % user already closed the dialogue box
+    end
 
     % close figure
     delete(hObject);
