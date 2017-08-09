@@ -318,6 +318,11 @@ function pushPreviousShot_Callback(~, ~, handles)
     num_images = getappdata(0, 'num_images');
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
+    axes = gca();
+    CLim = axes.CLim;
+    
+    % set curr_lim (which may have changed if imcontrast was used)
+    setappdata(0, 'curr_lim', CLim);
     
     if j == 1
         % if going to a new stack change camera structure if using energy
@@ -381,6 +386,11 @@ function pushNextShot_Callback(~, ~, handles)
     bend_struc = getappdata(0, 'bend_struc');
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
+    axes = gca();
+    CLim = axes.CLim;
+    
+    % set curr_lim (which may have changed if imcontrast was used)
+    setappdata(0, 'curr_lim', CLim);
     
     if j == num_images
         % if going to a new stack change camera structure if using energy
@@ -800,6 +810,11 @@ function jumpToShotButton_Callback(~, ~, handles)
     num_images = getappdata(0, 'num_images');
     stack_text = getappdata(0, 'stack_text');
     bend_struc = getappdata(0, 'bend_struc');
+    axes = gca();
+    CLim = axes.CLim;
+    
+    % set curr_lim (which may have changed if imcontrast was used)
+    setappdata(0, 'curr_lim', CLim);
     
     i = str2double(get(handles.editOfStack, 'String'));
     j = str2double(get(handles.editGoToShot, 'String'));
