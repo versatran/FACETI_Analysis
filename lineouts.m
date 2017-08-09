@@ -22,7 +22,7 @@ function varargout = lineouts(varargin)
 
     % Edit the above text to modify the response to help lineouts
 
-    % Last Modified by GUIDE v2.5 07-Aug-2017 12:23:58
+    % Last Modified by GUIDE v2.5 09-Aug-2017 10:38:58
 
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -328,5 +328,19 @@ function jumpToShotButton_Callback(~, ~, handles)
                 'dataset contains %d stack(s) and %d image(s) per stack.'], ...
                 num_stacks, num_images)));
         end
+    end
+end
+
+% --- Executes on key press with focus on figureLineouts or any of its controls.
+function figureLineouts_WindowKeyPressFcn(~, eventdata, handles)
+    key = eventdata.Key;
+    if (strcmp(key, 'rightarrow') && ...
+            strcmp(get(handles.pushNextShot, 'Visible'), 'on') && ...
+            strcmp(get(handles.pushNextShot, 'Enable'), 'on'))
+        pushNextShot_Callback(handles.pushNextShot, eventdata, handles);
+    elseif (strcmp(key, 'leftarrow') && ...
+            strcmp(get(handles.pushPreviousShot, 'Visible'), 'on') && ...
+            strcmp(get(handles.pushPreviousShot, 'Enable'), 'on'))
+        pushPreviousShot_Callback(handles.pushPreviousShot, eventdata, handles);
     end
 end
