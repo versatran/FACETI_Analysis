@@ -14,6 +14,9 @@ sebas_colors = sebasColorTable();
 box_region = getappdata(0, 'box_region');
 linearize = getappdata(0, 'linearize');
 remove_xrays = getappdata(0, 'remove_xrays');
+show_image = getappdata(0, 'show_image');
+log_color = getappdata(0, 'log_color');
+show_DC_sample = getappdata(0, 'show_DC_sample');
 i = getappdata(0, 'i');
 j = getappdata(0, 'j');
 
