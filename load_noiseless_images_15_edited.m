@@ -5,21 +5,21 @@
 % This script loads the jth image of ith stack and it is such a common block
 % in all programs that I am saving this as a script, 
 % I have removed this from the moviemaker script.
-function load_noiseless_images_15_edited(curr_image)
-    background_checked = getappdata(0, 'background_checked');
-    skip_background_verification = getappdata(0, 'skip_background_verification');
-    prefix = getappdata(0, 'prefix');
-    image_struc = getappdata(0, 'image_struc');
-    bend_struc = getappdata(0, 'bend_struc');
-    date_str = getappdata(0, 'date_str');
-    linearize = getappdata(0, 'linearize');
-    load_linearize_ROI = getappdata(0, 'load_linearize_ROI');
-    scale_adjustment = getappdata(0, 'scale_adjustment');
-    DC_offset = getappdata(0, 'DC_offset');
-    show_noise_sample = getappdata(0, 'show_noise_sample');
-    remove_xrays = getappdata(0, 'remove_xrays');
-    camera = getappdata(0, 'camera');
-    data = getappdata(0, 'data');
+function set_app_data = load_noiseless_images_15_edited(curr_image, app_data, set_app_data)
+    background_checked = app_data.background_checked;
+    skip_background_verification = app_data.skip_background_verification;
+    prefix = app_data.prefix;
+    image_struc = app_data.image_struc;
+    bend_struc = app_data.bend_struc;
+    date_str = app_data.date_str;
+    linearize = app_data.linearize;
+    load_linearize_ROI = app_data.load_linearize_ROI;
+    scale_adjustment = app_data.scale_adjustment;
+    DC_offset = app_data.DC_offset;
+    show_noise_sample = app_data.show_noise_sample;
+    remove_xrays = app_data.remove_xrays;
+    camera = app_data.camera;
+    data = app_data.data;
 
     if(linearize && load_linearize_ROI)
         background_checked = 0;
@@ -33,7 +33,7 @@ function load_noiseless_images_15_edited(curr_image)
             'unexpected background format')
         background = load(bkgrndstr);
         noise = background.img;
-        setappdata(0, 'noise', noise);
+        set_app_data.noise = noise;
 
         original_size = size(noise);
         original_vertsize = original_size(1);
@@ -43,12 +43,12 @@ function load_noiseless_images_15_edited(curr_image)
             case 'top'
                 sample_vector = [1, camera.sample_vert_width, 1, ...
                     camera.sample_horiz_width];
-                setappdata(0, 'sample_vector', sample_vector);
+                set_app_data.sample_vector = sample_vector;
             case 'bottom'
                 sample_vector = [original_vertsize - camera.sample_vert_width, ...
                     original_vertsize, original_horizsize - ...
                     camera.sample_horiz_width, original_horizsize];
-                setappdata(0, 'sample_vector', sample_vector);
+                set_app_data.sample_vector = sample_vector;
             otherwise
                 error('haven''t written this part yet')
         end
@@ -69,18 +69,18 @@ function load_noiseless_images_15_edited(curr_image)
                 'Background Noise');
             switch acceptable_noise
                 case 'Yes'
-                    setappdata(0, 'skip_background_verification', 1);
+                    set_app_data.skip_background_verification = 1;
                 case 'No'
                     background_saved_path = [outputdir 'background src/' ...
                         date_str '_' camera.name '.mat'];    
                     if exist(background_saved_path, 'file')
                         background_content = load(background_saved_path);
                         noise = background_content.img;
-                        setappdata(0, 'noise', noise);
+                        set_app_data.noise = noise;
                     else
                         error('noise is unacceptable. Program ends')
                     end
-                    setappdata(0 , 'skip_background_verification', 1);
+                    set_app_data.skip_background_verification = 1;
                 otherwise
                     error('Noise is unacceptable. Program ends')
             end
@@ -88,45 +88,45 @@ function load_noiseless_images_15_edited(curr_image)
         end
 
         X_ORIENT = image_struc.X_ORIENT(1);
-        setappdata(0, 'X_ORIENT', X_ORIENT);
+        set_app_data.X_ORIENT = X_ORIENT;
         Y_ORIENT = image_struc.Y_ORIENT(1);
-        setappdata(0, 'Y_ORIENT', Y_ORIENT);
+        set_app_data.Y_ORIENT = Y_ORIENT;
 
         % noise on CMOS_FAR is different than SYAG, so I made this flag explicit
         % here
         if strcmp(camera.name, 'CMOS_FAR')
             if X_ORIENT
                 noise = fliplr(noise);
-                setappdata(0, 'noise', noise);
+                set_app_data.noise = noise;
             end
             if Y_ORIENT
                 noise = flipud(noise);
-                setappdata(0, 'noise', noise);
+                set_app_data.noise = noise;
             end
         end
 
         if camera.rotate_noise
             noise = rot90(noise);
-            setappdata(0, 'noise', noise);
+            set_app_data.noise = noise;
         end
 
         % The noise scaling happens with the original size of the noise, but the
         % cropped image is the one that is modified in the rest of the program
         original_noise = noise;
-        setappdata(0, 'original_noise', original_noise);
+        set_app_data.original_noise = original_noise;
         if exist('draw_ROI', 'var')
             noise = imcrop(noise, draw_ROI);
-            setappdata(0, 'noise', noise);
+            set_app_data.noise = noise;
         end
 
         image_size = size(noise);
         vertsize = image_size(1);
         horizsize = image_size(2);
         resolution = image_struc.RESOLUTION(1);
-        setappdata(0, 'image_size', image_size);
-        setappdata(0, 'vertsize', vertsize);
-        setappdata(0, 'horizsize', horizsize);
-        setappdata(0, 'resolution', resolution);
+        set_app_data.image_size = image_size;
+        set_app_data.vertsize = vertsize;
+        set_app_data.horizsize = horizsize;
+        set_app_data.resolution = resolution;
 
         if resolution == 4.65
             resolution = 8.81;
@@ -153,7 +153,7 @@ function load_noiseless_images_15_edited(curr_image)
             end
             energy_calib_vector = get_energy_curve(camera.name, vertsize, ...
                 camera.zero_Gev_px, resolution, theta0);
-            setappdata(0, 'energy_calib_vector', energy_calib_vector);
+            set_app_data.energy_calib_vector = energy_calib_vector;
             if linearize
                 % in linearizing the image, the pixel numbers of the image are
                 % preserved
@@ -161,25 +161,25 @@ function load_noiseless_images_15_edited(curr_image)
                     energy_calib_vector);
                 [energy_ticks, energy_pixel] = cher_y_tick(camera.name, ...
                     vertsize, linear_energy_scale);
-                setappdata(0, 'energy_pixel', energy_pixel);
-                setappdata(0, 'energy_ticks', energy_ticks);
+                set_app_data.energy_pixel = energy_pixel;
+                set_app_data.energy_ticks = energy_ticks;
             else
                 [energy_ticks, energy_pixel] = cher_y_tick(camera.name, ...
                     vertsize, energy_calib_vector);
-                setappdata(0, 'energy_pixel', energy_pixel);
-                setappdata(0, 'energy_ticks', energy_ticks);
+                set_app_data.energy_pixel = energy_pixel;
+                set_app_data.energy_ticks = energy_ticks;
             end    
         end
 
         % if this is not reset, the energy vector for the next bend will
         % not be produced
         if (~isfield(bend_struc, 'variable_bend') || ~bend_struc.variable_bend)
-            setappdata(0, 'background_checked', 1);
+            set_app_data.background_checked = 1;
         end
     end
 
-    X_ORIENT = getappdata(0, 'X_ORIENT');
-    Y_ORIENT = getappdata(0, 'Y_ORIENT');
+    X_ORIENT = image_struc.X_ORIENT(1);
+    Y_ORIENT = image_struc.Y_ORIENT(1);
 
     % curr_image is the index that is used to load image instead of j, because
     % in a scan, all images are stacked into one single cell array (see
@@ -214,13 +214,13 @@ function load_noiseless_images_15_edited(curr_image)
 
         % scale background and subtract. These variables are determined in the
         % load_camera_config script
-        sample_vector = getappdata(0, 'sample_vector');
-        original_noise = getappdata(0, 'original_noise');
+        sample_vector = set_app_data.sample_vector;
+        original_noise = set_app_data.original_noise;
         image_sample = sum(sum(original_image(sample_vector(1):sample_vector(2), ...
             sample_vector(3):sample_vector(4))));
         BG_sample = sum(sum(original_noise(sample_vector(1):sample_vector(2), ...
             sample_vector(3):sample_vector(4))));
-        noise = getappdata(0, 'noise');
+        noise = set_app_data.noise;
         scale = image_sample / BG_sample;
         this_image = this_image - noise * scale * scale_adjustment;
 
@@ -246,18 +246,18 @@ function load_noiseless_images_15_edited(curr_image)
                 energy_calib_vector = getappdata(0, 'energy_calib_vector');
                 [linear_energy_scale, this_image] = linearize_image(this_image, ...
                     energy_calib_vector);
-                setappdata(0, 'linear_energy_scale', linear_energy_scale);
+                set_app_data.linear_energy_scale = linear_energy_scale;
             else
                 this_image = double(this_image);
             end
         end
 
-        setappdata(0, 'this_image', this_image);
+        set_app_data.this_image = this_image;
 
         % save the processed image in processed_data
-        saveProcessedImage(curr_image, this_image);
+        set_app_data = saveProcessedImage(curr_image, this_image, app_data, set_app_data);
     end
 
     % update current version of 'this_image'
-    setappdata(0, 'this_image', this_image);
+    set_app_data.this_image = this_image;
 end

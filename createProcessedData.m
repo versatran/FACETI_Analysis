@@ -3,11 +3,11 @@
 %
 % Author: Elliot Tuck
 % Date: 20170803
-function processed_data = createProcessedData()
-    data = getappdata(0, 'data');
+function set_app_data = createProcessedData(data, set_app_data)
     fields = fieldnames(data.processed);
     for k = 1:length(fields)
+        processed_data = set_app_data.processed_data;
         processed_data.(fields{k}) = struct();
+        set_app_data.processed_data = processed_data;
     end
-    setappdata(0, 'processed_data', processed_data);
 end

@@ -3,13 +3,16 @@
 %
 % Author: Elliot Tuck
 % Date: 20170803
-function saveProcessedImage(curr_image, this_image)
-    processed_data = getappdata(0, 'processed_data');
-    if (isempty(processed_data))
+function set_app_data = saveProcessedImage(curr_image, this_image, app_data, set_app_data)
+    if ~isfield(app_data, 'processed_data')
         % processed_data does not exist, so create it
-        processed_data = createProcessedData();
+        set_app_data = createProcessedData(app_data.data);
+        processed_data = set_app_data.processed_data;
+    else
+        % processed_data already exists
+        processed_data = app_data.processed_data;
     end
-    camera = getappdata(0, 'camera');
+    camera = app_data.camera;
     cameraName = camera.name;
     if (~isfield(processed_data.images, cameraName))
         % processed_data does not contain a folder for the current camera, so
@@ -18,9 +21,9 @@ function saveProcessedImage(curr_image, this_image)
     else
         % processed_data already contains a folder for the current camera, so
         % save the current (processed) image
-        image_struc = getappdata(0, 'image_struc');
+        image_struc = app_data.image_struc;
         [~, imageName, ~] = fileparts(image_struc.dat{curr_image});
         processed_data.images.(cameraName).(imageName) = this_image;
     end
-    setappdata(0, 'processed_data', processed_data);
+    set_app_data.processed_data = processed_data;
 end

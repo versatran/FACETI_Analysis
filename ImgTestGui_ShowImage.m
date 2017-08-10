@@ -63,7 +63,15 @@ curr_image = (i - 1) * num_images + j;
 setappdata(0, 'curr_image', curr_image);
 
 % load the current image
-load_noiseless_images_15_edited(curr_image);
+app_data = getappdata(0);
+if ~isappdata(0, 'set_app_data')
+    set_app_data = struct();
+else
+    set_app_data = getappdata(0, 'set_app_data');
+end
+set_app_data = load_noiseless_images_15_edited(curr_image, app_data, set_app_data);
+setApplicationData(set_app_data);
+setappdata(0, 'set_app_data', set_app_data);
 
 this_image = getappdata(0, 'this_image'); % from load_noiseless_images_15_edited
 
