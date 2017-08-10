@@ -131,7 +131,7 @@ function pushPreviousShot_Callback(~, ~, handles)
     bend_struc = getappdata(0, 'bend_struc');
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
-    axes = gca();
+    axes = subplot(1, 2, 1);
     CLim = axes.CLim;
     
     % set curr_lim (which may have changed if imcontrast was used)
@@ -198,7 +198,7 @@ function pushNextShot_Callback(~, ~, handles)
     bend_struc = getappdata(0, 'bend_struc');
     i = getappdata(0, 'i');
     j = getappdata(0, 'j');
-    axes = gca();
+    axes = subplot(1, 2, 1);
     CLim = axes.CLim;
     
     % set curr_lim (which may have changed if imcontrast was used)
@@ -266,7 +266,7 @@ function jumpToShotButton_Callback(~, ~, handles)
     num_images = getappdata(0, 'num_images');
     stack_text = getappdata(0, 'stack_text');
     bend_struc = getappdata(0, 'bend_struc');
-    axes = gca();
+    axes = subplot(1, 2, 1);
     CLim = axes.CLim;
     
     % set curr_lim (which may have changed if imcontrast was used)
