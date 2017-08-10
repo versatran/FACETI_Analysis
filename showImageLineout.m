@@ -17,6 +17,7 @@ remove_xrays = getappdata(0, 'remove_xrays');
 show_image = getappdata(0, 'show_image');
 log_color = getappdata(0, 'log_color');
 show_DC_sample = getappdata(0, 'show_DC_sample');
+camera = getappdata(0, 'camera');
 i = getappdata(0, 'i');
 j = getappdata(0, 'j');
 
