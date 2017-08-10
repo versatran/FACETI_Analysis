@@ -40,7 +40,7 @@ end
 curr_image = (i - 1) * num_images + j;
 setappdata(0, 'curr_image', curr_image);
 
-load_noiseless_images_15_edited;
+load_noiseless_images_15_edited(curr_image);
 
 this_image = getappdata(0, 'this_image');
 
