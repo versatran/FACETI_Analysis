@@ -18,6 +18,8 @@ sebas_colors = sebasColorTable();
 linearize = getappdata(0, 'linearize');
 remove_xrays = getappdata(0, 'remove_xrays');
 num_images = getappdata(0, 'num_images');
+show_image = getappdata(0, 'show_image');
+log_color = getappdata(0, 'log_color');
 i = getappdata(0, 'i');
 j = getappdata(0, 'j');
 

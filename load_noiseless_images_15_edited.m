@@ -9,31 +9,16 @@
 background_checked = getappdata(0, 'background_checked');
 skip_background_verification = getappdata(0, 'skip_background_verification');
 prefix = getappdata(0, 'prefix');
-num_stacks = getappdata(0, 'num_stacks');
 image_struc = getappdata(0, 'image_struc');
-num_images = getappdata(0, 'num_images');
-stack_text = getappdata(0, 'stack_text');
-func_name = getappdata(0, 'func_name');
 bend_struc = getappdata(0, 'bend_struc');
 curr_image = getappdata(0, 'curr_image');
-source_dir = getappdata(0, 'source_dir');
-server_str = getappdata(0, 'server_str');
-expt_str = getappdata(0, 'expt_str');
 date_str = getappdata(0, 'date_str');
-dataset_str = getappdata(0, 'dataset_str');
 linearize = getappdata(0, 'linearize');
+load_linearize_ROI = getappdata(0, 'load_linearize_ROI');
 scale_adjustment = getappdata(0, 'scale_adjustment');
-show_image = getappdata(0, 'show_image');
 DC_offset = getappdata(0, 'DC_offset');
-save_video = getappdata(0, 'save_video');
-save_data = getappdata(0, 'save_data');
-save_override = getappdata(0, 'save_override');
 show_noise_sample = getappdata(0, 'show_noise_sample');
 remove_xrays = getappdata(0, 'remove_xrays');
-show_DC_sample = getappdata(0, 'show_DC_sample');
-manual_energy = getappdata(0, 'manual_energy');
-log_color = getappdata(0, 'log_color');
-manual_set_figure_position = getappdata(0, 'manual_set_figure_position');
 camera = getappdata(0, 'camera');
 data = getappdata(0, 'data');
 
@@ -128,7 +113,6 @@ if ~background_checked
     
     % The noise scaling happens with the original size of the noise, but the
     % cropped image is the one that is modified in the rest of the program
-    noise = getappdata(0, 'noise');
     original_noise = noise;
     setappdata(0, 'original_noise', original_noise);
     if exist('draw_ROI', 'var')
@@ -174,8 +158,6 @@ if ~background_checked
         if linearize
             % in linearizing the image, the pixel numbers of the image are
             % preserved
-            noise = getappdata(0, 'noise');
-            energy_calib_vector = getappdata(0, 'energy_calib_vector');
             [linear_energy_scale, linear_noise] = linearize_image(noise, ...
                 energy_calib_vector);
             [energy_ticks, energy_pixel] = cher_y_tick(camera.name, ...
@@ -209,23 +191,19 @@ this_image = getProcessedImage(loadstr);
 if (isempty(this_image))
     % process the image
     this_image = imread(loadstr);
-    setappdata(0, 'this_image', this_image);
     image_UID = image_struc.UID(curr_image);
 
     if X_ORIENT
         this_image = fliplr(this_image);
-        setappdata(0, 'this_image', this_image);
     end
     if Y_ORIENT
         this_image = flipud(this_image);
-        setappdata(0, 'this_image', this_image);
     end
 
     % CMOS_far needed to be rotated to look "normal". On an individual
     % basis this should be determined and noise should be compensated
     if camera.rotate_image
         this_image = rot90(this_image);
-        setappdata(0, 'this_image', this_image);
     end
 
     original_image = this_image;
@@ -233,7 +211,6 @@ if (isempty(this_image))
         % TODO: only do analysis on the ROI. i.e. cut the noise, cut the image to
         % the ROI of the noise might not match the ROI of the image
         this_image = imcrop(this_image, draw_ROI);
-        setappdata(0, 'this_image', this_image);
     end
 
     % scale background and subtract. These variables are determined in the
@@ -247,11 +224,9 @@ if (isempty(this_image))
     noise = getappdata(0, 'noise');
     scale = image_sample / BG_sample;
     this_image = this_image - noise * scale * scale_adjustment;
-    setappdata(0, 'this_image', this_image);
 
     if remove_xrays
         this_image = RemoveXRays(this_image);
-        setappdata(0, 'this_image', this_image);
     end
 
     % removes DC offset in noise; defaults to noise sample if DC_sample not set
@@ -265,21 +240,20 @@ if (isempty(this_image))
                 mean2(this_image(sample_vector(1):sample_vector(2), ...
                 sample_vector(3):sample_vector(4)));
         end
-        setappdata(0, 'this_image', this_image);
     end
 
     if camera.energy_camera
         if linearize
-            non_linear_image = this_image;
             energy_calib_vector = getappdata(0, 'energy_calib_vector');
             [linear_energy_scale, this_image] = linearize_image(this_image, ...
                 energy_calib_vector);
             setappdata(0, 'linear_energy_scale', linear_energy_scale);
         else
             this_image = double(this_image);
-            setappdata(0, 'this_image', this_image);
         end
     end
+    
+    setappdata(0, 'this_image', this_image);
     
     % save the processed image in processed_data
     saveProcessedImage();
