@@ -126,6 +126,9 @@ if show_image % fix for odd(1) or even(0)
         colorbar
     end
     
+    % retain original image aspect ratio
+    axis('image');
+    
     if camera.energy_camera
         energy_pixel = getappdata(0, 'energy_pixel');
         energy_ticks = getappdata(0, 'energy_ticks');
