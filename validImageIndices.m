@@ -3,9 +3,11 @@
 %
 % Author: Elliot Tuck
 % Date: 20170804
-function valid = validImageIndices(i, j)
-    num_images = getappdata(0, 'num_images');
-    num_stacks = getappdata(0, 'num_stacks');
+function valid = validImageIndices(app_data, i, j)
+%     num_images = getappdata(0, 'num_images');
+%     num_stacks = getappdata(0, 'num_stacks');
+    num_images = app_data.num_images;
+    num_stacks = app_data.num_stacks;
     if (i >= 1 && i <= num_stacks && j >= 1 && j <= num_images)
         valid = 1;
     else

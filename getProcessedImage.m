@@ -4,19 +4,21 @@
 %
 % Author: Elliot Tuck
 % Date: 20170803
-function processed_image = getProcessedImage(path)
+function processed_image = getProcessedImage(app_data, path)
     processed_image = [];
-    if (~isappdata(0, 'processed_data'))
+    if isempty(app_data.processed_data)
         % processed_data has not been created yet, so there is definitely no
         % processed version of the current image
         return;
     else
         % processed_data has been created, so check if it contains a processed
         % version of the image in question
-        processed_data = getappdata(0, 'processed_data');
-        camera = getappdata(0, 'camera');
+%         processed_data = getappdata(0, 'processed_data');
+        processed_data = app_data.processed_data;
+%         camera = getappdata(0, 'camera');
+        camera = app_data.camera;
         cameraName = camera.name;
-        if (~isfield(processed_data.images, cameraName))
+        if ~isfield(processed_data.images, cameraName)
             % processed_data does not contain a folder for the current camera,
             % so it definitely does not have a processed version of the
             % current image
@@ -25,7 +27,7 @@ function processed_image = getProcessedImage(path)
             % processed_data contains a folder for the current camera, so check
             % if it has a processed version of the current image
             [~, imageName, ~] = fileparts(path);
-            if (isfield(processed_data.images.(cameraName), imageName))
+            if isfield(processed_data.images.(cameraName), imageName)
                 % processed_data contains a processed version of the current
                 % image
                 processed_image = ...

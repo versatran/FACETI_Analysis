@@ -3,17 +3,19 @@
 %
 % Author: Elliot Tuck
 % Date: 20170810
-function saveProcessedImage()
-    if ~isappdata(0, 'processed_data')
+function saveProcessedImage(app_data)
+    if isempty(app_data.processed_data)
         % processed_data does not exist, so create it
-        processed_data = createProcessedData();
+        processed_data = createProcessedData(app_data);
     else
         % processed_data already exists
-        processed_data = getappdata(0, 'processed_data');
+%         processed_data = getappdata(0, 'processed_data');
+        processed_data = app_data.processed_data;
     end
     % get the name of the camera so this_image can be saved in the
     % appropriate location
-    camera = getappdata(0, 'camera');
+%     camera = getappdata(0, 'camera');
+    camera = app_data.camera;
     cameraName = camera.name;
     if ~isfield(processed_data.images, cameraName)
         % processed_data does not contain a folder for the current camera, so
@@ -22,10 +24,14 @@ function saveProcessedImage()
     end
     % save the current (processed) image in its appropriate location
     % within processed_data
-    image_struc = getappdata(0, 'image_struc');
-    curr_image = getappdata(0, 'curr_image');
+%     image_struc = getappdata(0, 'image_struc');
+%     curr_image = getappdata(0, 'curr_image');
+    image_struc = app_data.image_struc;
+    curr_image = app_data.curr_image;
     [~, imageName, ~] = fileparts(image_struc.dat{curr_image});
-    this_image = getappdata(0, 'this_image');
+%     this_image = getappdata(0, 'this_image');
+    this_image = app_data.this_image;
     processed_data.images.(cameraName).(imageName) = this_image;
-    setappdata(0, 'processed_data', processed_data);
+%     setappdata(0, 'processed_data', processed_data);
+    app_data.processed_data = processed_data;
 end

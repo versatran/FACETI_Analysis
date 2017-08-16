@@ -30,27 +30,33 @@ function ImgTestGui_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
     set(gcf, 'color', [1,1,1]);
 
-    % set inital values for various variables used throughout this code. These
-    % values can be changed in the options menu. See options();
-    setappdata(0, 'remote', 1); 
-    setappdata(0, 'skip_background_verification', 0);
-    setappdata(0, 'linearize', 0);
-    setappdata(0, 'show_image', 1);
-    setappdata(0, 'DC_offset', 1);
-    setappdata(0, 'save_video', 1);
-    setappdata(0, 'save_data', 1);
-    setappdata(0, 'save_override', 0);
-    setappdata(0, 'show_noise_sample', 1);
-    setappdata(0, 'remove_xrays', 1);
-    setappdata(0, 'show_DC_sample', 0);
-    setappdata(0, 'manual_energy', 1);
-    setappdata(0, 'log_color', 0);
-    setappdata(0, 'manual_set_figure_position', 1);
-    setappdata(0, 'background_checked', 0);
-    setappdata(0, 'scale_adjustment', 0.95);
-    setappdata(0, 'curr_lim', [0 5000]);
-    setappdata(0, 'curr_lim1', 0);
-    setappdata(0, 'curr_lim2', 5000);
+%     % set inital values for various variables used throughout this code. These
+%     % values can be changed in the options menu. See options();
+%     setappdata(0, 'remote', 1); 
+%     setappdata(0, 'skip_background_verification', 0);
+%     setappdata(0, 'linearize', 0);
+%     setappdata(0, 'show_image', 1);
+%     setappdata(0, 'DC_offset', 1);
+%     setappdata(0, 'save_video', 1);
+%     setappdata(0, 'save_data', 1);
+%     setappdata(0, 'save_override', 0);
+%     setappdata(0, 'show_noise_sample', 1);
+%     setappdata(0, 'remove_xrays', 1);
+%     setappdata(0, 'show_DC_sample', 0);
+%     setappdata(0, 'manual_energy', 1);
+%     setappdata(0, 'log_color', 0);
+%     setappdata(0, 'manual_set_figure_position', 1);
+%     setappdata(0, 'background_checked', 0);
+%     setappdata(0, 'scale_adjustment', 0.95);
+%     setappdata(0, 'curr_lim', [0 5000]);
+%     setappdata(0, 'curr_lim1', 0);
+%     setappdata(0, 'curr_lim2', 5000);
+    
+    % create new default AppData object, add it to handles structure, and
+    % update handles structure
+    app_data = AppData();
+    handles.app_data = app_data;
+    guidata(hObject, handles);
 
     % handle source directory selection
     if isunix
@@ -72,8 +78,11 @@ function ImgTestGui_OpeningFcn(hObject, eventdata, handles, varargin)
         else
             % valid source directory found
 
-            % set these initial inputs for loading a dataset
-            setappdata(0, 'source_dir', source_dir);
+%             % set these initial inputs for loading a dataset
+%             setappdata(0, 'source_dir', source_dir);
+
+            % update source_dir
+            app_data.dataset_info.source_dir = source_dir;
 
             % populate source directory text box with selected/default text
             set(handles.staticSourceDir, 'String', source_dir);
@@ -228,27 +237,37 @@ end
 %   handles    structure with handles and user data (see GUIDATA)
 
 
-function pushLoadDataSet_Callback(~, ~, ~)
+function pushLoadDataSet_Callback(~, ~, handles)
     % inform user that camera selection dialog will pop up soon
     m1 = msgbox('Loading data, one moment please...');
 
-    % get parts of path input by user from textboxes
-    source_dir = getappdata(0, 'source_dir');
-    server_str = getappdata(0, 'server_str');
-    expt_str = getappdata(0, 'expt_str');
-    date_str = getappdata(0, 'date_str');
-    dataset_str = getappdata(0, 'dataset_str');
+%     % get parts of path input by user from textboxes
+%     source_dir = getappdata(0, 'source_dir');
+%     server_str = getappdata(0, 'server_str');
+%     expt_str = getappdata(0, 'expt_str');
+%     date_str = getappdata(0, 'date_str');
+%     dataset_str = getappdata(0, 'dataset_str');
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+    source_dir = dataset_info.source_dir;
+    server_str = dataset_info.server_str;
+    expt_str = dataset_info.expt_str;
+    date_str = dataset_info.date_str;
+    dataset_str = dataset_info.dataset_str;
 
     % creates the path to dataset from user input
     data_path = [source_dir server_str expt_str filesep date_str(1:4) ...
         filesep date_str filesep expt_str '_' dataset_str filesep expt_str ...
         '_' dataset_str '.mat'];
-    setappdata(0, 'data_path', data_path);
+%     setappdata(0, 'data_path', data_path);
+    dataset_info.data_path = data_path;
 
     % load data
     data = E200_load_data(data_path, expt_str);
-    setappdata(0, 'data', data);
-    setappdata(0, 'dataorig', data);
+%     setappdata(0, 'data', data);
+%     setappdata(0, 'dataorig', data);
+    app_data.data = data;
+    app_data.dataorig = data;
 
     cameraNames();
     
@@ -312,17 +331,25 @@ function pushPreviousShot_Callback(~, ~, handles)
     set(handles.pushNextShot, 'Visible', 'on');
     
     % get necessary variables
-    camera = getappdata(0, 'camera');
-    stack_text = getappdata(0, 'stack_text');
-    bend_struc = getappdata(0, 'bend_struc');
-    num_images = getappdata(0, 'num_images');
-    i = getappdata(0, 'i');
-    j = getappdata(0, 'j');
+%     camera = getappdata(0, 'camera');
+%     stack_text = getappdata(0, 'stack_text');
+%     bend_struc = getappdata(0, 'bend_struc');
+%     num_images = getappdata(0, 'num_images');
+%     i = getappdata(0, 'i');
+%     j = getappdata(0, 'j');
+    app_data = handles.app_data;
+    camera = app_data.camera;
+    stack_text = app_data.stack_text;
+    bend_struc = app_data.bend_struc;
+    num_images = app_data.num_images;
+    i = app_data.i;
+    j = app_data.j;
     axes = gca();
     CLim = axes.CLim;
     
     % set curr_lim (which may have changed if imcontrast was used)
-    setappdata(0, 'curr_lim', CLim);
+%     setappdata(0, 'curr_lim', CLim);
+    app_data.curr_lim = CLim;
     
     if j == 1
         % if going to a new stack change camera structure if using energy
@@ -337,7 +364,8 @@ function pushPreviousShot_Callback(~, ~, handles)
                 if ~contains(stack_text{i - 1}, 'Dipole')
                     stack_text{i - 1} = ['Dipole=' ...
                         num2str(camera.dipole_bend, 2) ', ' stack_text{i - 1}];
-                    setappdata(0, 'stack_text', stack_text);
+%                     setappdata(0, 'stack_text', stack_text);
+                    app_data.stack_text = stack_text;
                 end
             end
         end
@@ -346,31 +374,36 @@ function pushPreviousShot_Callback(~, ~, handles)
     if j > 2
         % there is a previous image in the current stack to display
         j = j - 1;
-        setappdata(0, 'j', j);
-        ImgTestGui_ShowImage;
+%         setappdata(0, 'j', j);
+        app_data.j = j;
+        ImgTestGui_ShowImage(app_data);
     elseif (j == 2 && i == 1)
         % the previous image is the first in the current stack and
         % there is no stack before the current one, so hide the 
         % 'Push Previous Shot' button
         set(handles.pushPreviousShot, 'Visible', 'off');
         j = j - 1;
-        setappdata(0, 'j', j);
-        ImgTestGui_ShowImage;
+%         setappdata(0, 'j', j);
+        app_data.j = j;
+        ImgTestGui_ShowImage(app_data);
     elseif j == 2
         % there are more stacks before the current one, so do not hide the
         % 'Push Previous Shot' button
         j = j - 1;
-        setappdata(0, 'j', j);
-        ImgTestGui_ShowImage;
+%         setappdata(0, 'j', j);
+        app_data.j = j;
+        ImgTestGui_ShowImage(app_data);
     else
         % the first image in the current stack is currently being
         % displayed and there is another stack before the current one, so
         % show the last image in the previous stack
         i = i - 1;
         j = num_images;
-        setappdata(0, 'i', i);
-        setappdata(0, 'j', j);
-        ImgTestGui_ShowImage;
+%         setappdata(0, 'i', i);
+%         setappdata(0, 'j', j);
+        app_data.i = i;
+        app_data.j = j;
+        ImgTestGui_ShowImage(app_data);
     end
 end
 
@@ -379,18 +412,27 @@ function pushNextShot_Callback(~, ~, handles)
     set(handles.pushPreviousShot, 'Visible', 'on');
 
     % get necessary variables
-    camera = getappdata(0, 'camera');
-    num_stacks = getappdata(0, 'num_stacks');
-    num_images = getappdata(0, 'num_images');
-    stack_text = getappdata(0, 'stack_text');
-    bend_struc = getappdata(0, 'bend_struc');
-    i = getappdata(0, 'i');
-    j = getappdata(0, 'j');
+%     camera = getappdata(0, 'camera');
+%     num_stacks = getappdata(0, 'num_stacks');
+%     num_images = getappdata(0, 'num_images');
+%     stack_text = getappdata(0, 'stack_text');
+%     bend_struc = getappdata(0, 'bend_struc');
+%     i = getappdata(0, 'i');
+%     j = getappdata(0, 'j');
+    app_data = handles.app_data;
+    camera = app_data.camera;
+    num_stacks = app_data.num_stacks;
+    num_images = app_data.num_images;
+    stack_text = app_data.stack_text;
+    bend_struc = app_data.bend_struc;
+    i = app_data.i;
+    j = app_data.j;
     axes = gca();
     CLim = axes.CLim;
     
     % set curr_lim (which may have changed if imcontrast was used)
-    setappdata(0, 'curr_lim', CLim);
+%     setappdata(0, 'curr_lim', CLim);
+    app_data.curr_lim = CLim;
     
     if j == num_images
         % if going to a new stack change camera structure if using energy
@@ -405,7 +447,8 @@ function pushNextShot_Callback(~, ~, handles)
                 if ~contains(stack_text{i + 1}, 'Dipole')
                     stack_text{i + 1} = ['Dipole=' ...
                         num2str(camera.dipole_bend, 2) ', ' stack_text{i + 1}];
-                    setappdata(0, 'stack_text', stack_text);
+%                     setappdata(0, 'stack_text', stack_text);
+                    app_data.stack_text = stack_text;
                 end
             end
         end
@@ -424,15 +467,18 @@ function pushNextShot_Callback(~, ~, handles)
             % there are more stacks, so go to the next one
             i = i + 1;
             j = 1;
-            setappdata(0, 'i', i);
-            setappdata(0, 'j', j);
-            ImgTestGui_ShowImage;
+%             setappdata(0, 'i', i);
+%             setappdata(0, 'j', j);
+            app_data.i = i;
+            app_data.j = j;
+            ImgTestGui_ShowImage(app_data);
         end
     else
         % there are more images in the current stack to display
         j = j + 1;
-        setappdata(0, 'j', j);
-        ImgTestGui_ShowImage;
+%         setappdata(0, 'j', j);
+        app_data.j = j;
+        ImgTestGui_ShowImage(app_data);
     end
 end
 
@@ -711,10 +757,14 @@ end
 
 function serverPopUpMenu_Callback(hObject, eventdata, handles)
     expPopUpMenu = handles.experimentPopUpMenu;
-    source_dir = getappdata(0, 'source_dir');
+%     source_dir = getappdata(0, 'source_dir');
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+    source_dir = dataset_info.source_dir;
     values = get(hObject, 'String');
     server_str = ['nas' filesep values{get(hObject, 'Value')} filesep];
-    setappdata(0, 'server_str', server_str);
+%     setappdata(0, 'server_str', server_str);
+    dataset_info.server_str = server_str;
     set(expPopUpMenu, 'String', getSubDirectoryList([source_dir server_str]));
     set(expPopUpMenu, 'enable', 'on');
     set(expPopUpMenu, 'Value', 1);
@@ -724,11 +774,16 @@ end
 
 function experimentPopUpMenu_Callback(hObject, eventdata, handles)
     yearPopUpMenu = handles.yearPopUpMenu;
-    source_dir = getappdata(0, 'source_dir');
-    server_str = getappdata(0, 'server_str');
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+%     source_dir = getappdata(0, 'source_dir');
+%     server_str = getappdata(0, 'server_str');
+    source_dir = dataset_info.source_dir;
+    server_str = dataset_info.server_str;
     values = get(hObject, 'String');
     expt_str = values{get(hObject, 'Value')};
-    setappdata(0, 'expt_str', expt_str);
+%     setappdata(0, 'expt_str', expt_str);
+    dataset_info.expt_str = expt_str;
     set(yearPopUpMenu, 'String', ...
         getSubDirectoryList([source_dir server_str expt_str]));
     set(yearPopUpMenu, 'enable', 'on');
@@ -738,12 +793,18 @@ end
 
 function yearPopUpMenu_Callback(hObject, eventdata, handles)
     datePopUpMenu = handles.datePopUpMenu;
-    source_dir = getappdata(0, 'source_dir');
-    server_str = getappdata(0, 'server_str');
-    expt_str = getappdata(0, 'expt_str');
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+%     source_dir = getappdata(0, 'source_dir');
+%     server_str = getappdata(0, 'server_str');
+%     expt_str = getappdata(0, 'expt_str');
+    source_dir = dataset_info.source_dir;
+    server_str = dataset_info.server_str;
+    expt_str = dataset_info.expt_str;
     values = get(hObject, 'String');
     year_str = values{get(hObject, 'Value')};
-    setappdata(0, 'year_str', year_str);
+%     setappdata(0, 'year_str', year_str);
+    dataset_info.year_str = year_str;
     set(datePopUpMenu, 'String', ...
         getSubDirectoryList([source_dir server_str expt_str filesep year_str]));
     set(datePopUpMenu, 'enable', 'on');
@@ -753,13 +814,20 @@ end
 
 function datePopUpMenu_Callback(hObject, eventdata, handles)
     datasetPopUpMenu = handles.datasetPopUpMenu;
-    source_dir = getappdata(0, 'source_dir');
-    server_str = getappdata(0, 'server_str');
-    expt_str = getappdata(0, 'expt_str');
-    year_str = getappdata(0, 'year_str');
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+%     source_dir = getappdata(0, 'source_dir');
+%     server_str = getappdata(0, 'server_str');
+%     expt_str = getappdata(0, 'expt_str');
+%     year_str = getappdata(0, 'year_str');
+    source_dir = dataset_info.source_dir;
+    server_str = dataset_info.server_str;
+    expt_str = dataset_info.expt_str;
+    year_str = dataset_info.year_str;
     values = get(hObject, 'String');
     date_str = values{get(hObject, 'Value')};
-    setappdata(0, 'date_str', date_str);
+%     setappdata(0, 'date_str', date_str);
+    dataset_info.date_str = date_str;
     subDirList = getSubDirectoryList([source_dir server_str expt_str filesep ...
         year_str filesep date_str]);
     formattedSubDirList = cell(1, length(subDirList));
@@ -775,7 +843,10 @@ end
 function datasetPopUpMenu_Callback(hObject, ~, handles)
     values = get(hObject, 'String');
     dataset_str = values{get(hObject, 'Value')};
-    setappdata(0, 'dataset_str', dataset_str);
+%     setappdata(0, 'dataset_str', dataset_str);
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+    dataset_info.dataset_str = dataset_str;
     % set output directory 
     outputdir = ['R:/Lab Work/FACET Analysis/' dataset_str '/'];
     setappdata(0, 'outputdir', outputdir);
@@ -799,30 +870,43 @@ function changeSourceDirectoryButton_Callback(~, eventdata, handles)
     set(handles.serverPopUpMenu, 'Value', 1);
     serverPopUpMenu_Callback(handles.serverPopUpMenu, eventdata, handles);
 
-    % set these initial inputs for loading a dataset
-    setappdata(0, 'source_dir', source_dir);
+%     % set these initial inputs for loading a dataset
+%     setappdata(0, 'source_dir', source_dir);
+    app_data = handles.app_data;
+    dataset_info = app_data.dataset_info;
+    dataset_info.source_dir = source_dir;
 end
 
 function jumpToShotButton_Callback(~, ~, handles)
     % get necessary variables
-    camera = getappdata(0, 'camera');
-    num_stacks = getappdata(0, 'num_stacks');
-    num_images = getappdata(0, 'num_images');
-    stack_text = getappdata(0, 'stack_text');
-    bend_struc = getappdata(0, 'bend_struc');
+%     camera = getappdata(0, 'camera');
+%     num_stacks = getappdata(0, 'num_stacks');
+%     num_images = getappdata(0, 'num_images');
+%     stack_text = getappdata(0, 'stack_text');
+%     bend_struc = getappdata(0, 'bend_struc');
+    app_data = handles.app_data;
+    camera = app_data.camera;
+    num_stacks = app_data.num_stacks;
+    num_images = app_data.num_images;
+    stack_text = app_data.stack_text;
+    bend_struc = app_data.bend_struc;
     axes = gca();
     CLim = axes.CLim;
     
     % set curr_lim (which may have changed if imcontrast was used)
-    setappdata(0, 'curr_lim', CLim);
+%     setappdata(0, 'curr_lim', CLim);
+    app_data.curr_lim = CLim;
     
     i = str2double(get(handles.editOfStack, 'String'));
     j = str2double(get(handles.editGoToShot, 'String'));
-    if (~isnan(i) && ~isnan(j) && validImageIndices(i, j))
+    if (~isnan(i) && ~isnan(j) && validImageIndices(app_data, i, j))
         % image indices are valid - jump to the requested image
-        newStack = i ~= getappdata(0, 'i');   % indicates jumping to a new stack
-        setappdata(0, 'i', i);
-        setappdata(0, 'j', j);
+%         newStack = i ~= getappdata(0, 'i');   % indicates jumping to a new stack
+%         setappdata(0, 'i', i);
+%         setappdata(0, 'j', j);
+        newStack = i ~= app_data.i;
+        app_data.i = i;
+        app_data.j = j;
         
         % if user specified the first shot of first stack, previous shot button 
         % disappears
@@ -845,14 +929,15 @@ function jumpToShotButton_Callback(~, ~, handles)
                     if ~contains(stack_text{i}, 'Dipole')
                         stack_text{i} = ['Dipole=' ...
                             num2str(camera.dipole_bend, 2) ', ' stack_text{i}];
-                        setappdata(0, 'stack_text', stack_text);
+%                         setappdata(0, 'stack_text', stack_text);
+                        app_data.stack_text = stack_text;
                     end
                 end
             end
         end
         
         % display the image
-        ImgTestGui_ShowImage;
+        ImgTestGui_ShowImage(app_data);
 
         if (j == num_images && i == num_stacks) % removes button to prevent user 
                                                 % from clicking onward

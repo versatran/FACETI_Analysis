@@ -1,5 +1,10 @@
 function [prefix, num_stacks, image_struc, num_images, stack_text, func_name,...
-    bend_struc] = eda_load_data(source_dir, date_str, camera)
+    bend_struc] = eda_load_data(app_data)
+    dataset_info = app_data.dataset_info;
+    source_dir = dataset_info.source_dir;
+    date_str = dataset_info.date_str;
+    camera = app_data.camera.name;
+    
     % if remote
     %     prefix=get_remoteprefix();
     % else
@@ -16,7 +21,8 @@ function [prefix, num_stacks, image_struc, num_images, stack_text, func_name,...
     %     dataset_str '.mat'];
     
     % load data
-    data = getappdata(0, 'data');
+%     data = getappdata(0, 'data');
+    data = app_data.data;
 
     % determine whether it is a sample or scan
     if strcmp(data.raw.metadata.settype, 'daq')

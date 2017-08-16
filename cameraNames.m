@@ -55,7 +55,11 @@ function cameraNames_OpeningFcn(hObject, ~, handles, varargin)
     handles.output = hObject;
 
     % get data created from Load Data Set
-    data = getappdata(0, 'data');
+%     data = getappdata(0, 'data');
+    mainGUI = findobj('Tag', 'figureImgTestGui');
+    mainGUI_handles = guidata(mainGUI);
+    app_data = mainGUI_handles.app_data;
+    data = app_data.data;
     % gets the camera names from data set
     Cams_str = fieldnames(data.raw.images);
     set(handles.listCameraNames, 'String', Cams_str);
@@ -102,19 +106,28 @@ function pushLoadImages_Callback(hObject, ~, handles)
     camera = contents{get(handles.listCameraNames, 'Value')};
     % get camera structure associated with inputted camera string
     camera = load_camera_config(camera);
+    
+    % get main GUI app_data from its handles
+    mainGUI = findobj('Tag', 'figureImgTestGui');
+    mainGUI_handles = guidata(mainGUI);
+    app_data = mainGUI_handles.app_data;
+    
     if (camera.energy_camera)
         % these are for setting initial condition on these variables when
         % creating linear energy scale 
-        setappdata(0, 'check_linearize_ROI', 0);
-        setappdata(0, 'load_linearize_ROI', 0);
+%         setappdata(0, 'check_linearize_ROI', 0);
+%         setappdata(0, 'load_linearize_ROI', 0);
+        app_data.check_linearize_ROI = 0;
+        app_data.load_linearize_ROI = 0;
         % this is for allowing noise to be updated with new camera load and
         % for linearizing
-        setappdata(0, 'background_checked', 0);
+%         setappdata(0, 'background_checked', 0);
+        app_data.background_checked = 0;
     end
-    setappdata(0, 'camera', camera);
+%     setappdata(0, 'camera', camera);
+    app_data.camera = camera;
 
     % import GUI handles of ImgTestGui
-    figureImgTestGui = findobj('Tag', 'figureImgTestGui');
     pushPreviousShot = findobj('Tag', 'pushPreviousShot');
     pushNextShot = findobj('Tag', 'pushNextShot');
     textGoToShot = findobj('Tag', 'textGoToShot');
@@ -123,40 +136,52 @@ function pushLoadImages_Callback(hObject, ~, handles)
     editOfStack = findobj('Tag', 'editOfStack');
     jumpToShotButton = findobj('Tag', 'jumpToShotButton');
     axesImage = findobj('Tag', 'axesImage');
-    set(groot, 'CurrentFigure', figureImgTestGui);
+    set(groot, 'CurrentFigure', mainGUI);
     figure(gcf);
-    set(figureImgTestGui, 'CurrentAxes', axesImage);
+    set(mainGUI, 'CurrentAxes', axesImage);
 
     % get necessary variables
-    source_dir = getappdata(0, 'source_dir');
-    date_str = getappdata(0, 'date_str');
-    camera = getappdata(0, 'camera');
+%     source_dir = getappdata(0, 'source_dir');
+%     date_str = getappdata(0, 'date_str');
+%     camera = getappdata(0, 'camera');
+    dataset_info = app_data.dataset_info;
+    source_dir = dataset_info.source_dir;
+    date_str = dataset_info.date_str;
 
     % removes previous shot button since this is the first image
     set(pushPreviousShot, 'Visible', 'off');
     
     % set position to keep ImgTestGui from resizing itself
-    set(figureImgTestGui, 'Position', [30 19.2308 150.8 45]);
+    set(mainGUI, 'Position', [30 19.2308 150.8 45]);
     
     % eda_load_data is slightly modified version of nvn_load_data except
     % E200_load_data is not run here, it was run in pushLoadDataSet in
     % ImgTestGUI
     [prefix, num_stacks, image_struc, num_images, stack_text, func_name, ...
-        bend_struc] = eda_load_data(source_dir, date_str, camera.name);
+        bend_struc] = eda_load_data(app_data);
 
     % set eda_load_data outputs into appdata for use by other functions
-    setappdata(0, 'prefix', prefix);
-    setappdata(0, 'num_stacks', num_stacks);
-    setappdata(0, 'image_struc', image_struc);
-    setappdata(0, 'num_images', num_images);
-    setappdata(0, 'stack_text', stack_text);
-    setappdata(0, 'func_name', func_name);
-    setappdata(0, 'bend_struc', bend_struc);
+%     setappdata(0, 'prefix', prefix);
+%     setappdata(0, 'num_stacks', num_stacks);
+%     setappdata(0, 'image_struc', image_struc);
+%     setappdata(0, 'num_images', num_images);
+%     setappdata(0, 'stack_text', stack_text);
+%     setappdata(0, 'func_name', func_name);
+%     setappdata(0, 'bend_struc', bend_struc);
+    app_data.prefix = prefix;
+    app_data.num_stacks = num_stacks;
+    app_data.image_struc = image_struc;
+    app_data.num_images = num_images;
+    app_data.stack_text = stack_text;
+    app_data.func_name = func_name;
+    app_data.bend_struc = bend_struc;
 
      % since this is the first image, i and j are set to 1 
     [i, j] = deal(1);
-    setappdata(0, 'i', i);
-    setappdata(0, 'j', j);
+%     setappdata(0, 'i', i);
+%     setappdata(0, 'j', j);
+    app_data.i = i;
+    app_data.j = j;
 
     if camera.energy_camera 
         if (isfield(bend_struc, 'variable_bend') && bend_struc.variable_bend)
@@ -166,7 +191,8 @@ function pushLoadImages_Callback(hObject, ~, handles)
         if camera.dipole_bend ~= 1
             stack_text{i} = ['Dipole=' num2str(camera.dipole_bend, 2) ', ' ...
                 stack_text{i}];
-            setappdata(0, 'stack_text', stack_text);
+%             setappdata(0, 'stack_text', stack_text);
+            app_data.stack_text = stack_text;
         end
     end
 
@@ -188,5 +214,5 @@ function pushLoadImages_Callback(hObject, ~, handles)
     close(hObject.Parent);
 
     % sets current image to be used by load_noiseless_images_15_edited
-    ImgTestGui_ShowImage;
+    ImgTestGui_ShowImage(app_data);
 end
