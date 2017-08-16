@@ -70,7 +70,6 @@ if show_image % fix for odd(1) or even(0)
     image_axis = axesImage;
     set(figureImgTestGui, 'CurrentAxes', image_axis)
     if curr_image == 1
-        set(figureImgTestGui, 'Position', [30 19.2308 150.2 45]);
         if exist('draw_ROI', 'var')
             display_width = draw_ROI(3);
             display_height = draw_ROI(4);
@@ -108,10 +107,7 @@ if show_image % fix for odd(1) or even(0)
         setappdata(0, 'r1', r1);
         setappdata(0, 'r2', r2);
 
-        set(gca, 'fontsize', 15); 
-        % if the resizing pushes the window out of the border, this
-        % command brings it back
-        movegui(figureImgTestGui);
+        set(gca, 'fontsize', 15);
     end
 
     % make the original image if diagnostic is on, otherwise work

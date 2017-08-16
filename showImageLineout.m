@@ -104,11 +104,7 @@ if show_image % fix for odd(1) or even(0)
 %             set(gcf,'position',[contained_p(1) contained_p(2) contained_p(3) contained_p(4)*r1/r2]);
 %         end
 
-        set(gca, 'fontsize', 15); 
-        
-        %If the resizing pushes the window out of the border, this
-        %command brings it back
-        movegui(handles.figureLineouts);
+        set(gca, 'fontsize', 15);
     end        
     % make the original image if diagnostic is on, otherwise work
     % only with linearized (or otherwise processed?) image
