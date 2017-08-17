@@ -54,30 +54,16 @@ lineout(i, j, :) = sum(this_image(:, box_region), 2);
 if show_image % fix for odd(1) or even(0)
     image_axis = subplot(1, 2, 1);
     if curr_image == 1
-        if exist('draw_ROI', 'var')
-            display_width = draw_ROI(3);
-            display_height = draw_ROI(4);
-            width_start = 1;
-            height_start = 1;
-            setappdata(0, 'height_start', height_start);
-            setappdata(0, 'width_start', width_start);
-            
-            if exist('axis_limits_lineout', 'var')
-                axis_limits_lineout(3) = draw_ROI(3);
-                axis_limits_lineout(4) = draw_ROI(4);
-            end
-        else
-            horizsize = getappdata(0, 'horizsize');
-            vertsize = getappdata(0, 'vertsize');
-            display_width = horizsize;
-            display_height = vertsize;
-            setappdata(0, 'display_width', display_width);
-            setappdata(0, 'display_height', display_height);
-            width_start = 1;
-            height_start = 1;
-            setappdata(0, 'height_start', height_start);
-            setappdata(0, 'width_start', width_start);
-        end
+        horizsize = getappdata(0, 'horizsize');
+        vertsize = getappdata(0, 'vertsize');
+        display_width = horizsize;
+        display_height = vertsize;
+        setappdata(0, 'display_width', display_width);
+        setappdata(0, 'display_height', display_height);
+        width_start = 1;
+        height_start = 1;
+        setappdata(0, 'height_start', height_start);
+        setappdata(0, 'width_start', width_start);
         
         % TODO: this will need to be set by me eventially!
         contained_p = get(handles.figureLineouts, 'position');
@@ -105,7 +91,24 @@ if show_image % fix for odd(1) or even(0)
 %         end
 
         set(gca, 'fontsize', 15);
-    end        
+    end
+    
+    if isappdata(0, 'draw_ROI')
+        draw_ROI = getappdata(0, 'draw_ROI');
+        display_width = draw_ROI(3);
+        display_height = draw_ROI(4);
+        setappdata(0, 'display_width', display_width);
+        setappdata(0, 'display_height', display_height);
+        width_start = draw_ROI(1);
+        height_start = draw_ROI(2);
+        setappdata(0, 'height_start', height_start);
+        setappdata(0, 'width_start', width_start);
+        if exist('axis_limits_lineout', 'var')
+            axis_limits_lineout(3) = draw_ROI(3);
+            axis_limits_lineout(4) = draw_ROI(4);
+        end
+    end
+    
     % make the original image if diagnostic is on, otherwise work
     % only with linearized (or otherwise processed?) image
     if log_color
@@ -140,12 +143,15 @@ if show_image % fix for odd(1) or even(0)
     end
 
     % writing and drawing on the image
-    height_start = getappdata(0, 'height_start');
-    display_height = getappdata(0, 'display_height');
-    display_width = getappdata(0, 'display_width');
     width_start = getappdata(0, 'width_start');
+    height_start = getappdata(0, 'height_start');
+    display_width = getappdata(0, 'display_width');
+    display_height = getappdata(0, 'display_height');
+    default_display_width = getappdata(0, 'default_display_width');
+    default_display_height = getappdata(0, 'default_display_height');
+    
     rectangles= [box_region(1) height_start box_region(end) - box_region(1) ...
-        display_height];                    
+        display_height];
     size_rectangles = size(rectangles);
     
     for k = 1:size_rectangles(1)
@@ -177,14 +183,16 @@ if show_image % fix for odd(1) or even(0)
         rectangle('position', DC_sample, 'linewidth', 2, 'linestyle', '--');
     end
     
-    text(.02 * display_width + width_start, .03 * display_height + ...
-        height_start, ['Shot: ' int2str(j) '/' int2str(num_images)], ...
-        'color', 'w', 'backgroundcolor', 'b');
-    
-    if exist('stack_text', 'var')
-        text(.02 * display_width + width_start, .1 * display_height + ...
-            height_start, stack_text{i}, 'color', 'w', 'backgroundcolor', ...
-            'blue');
+    % display shot number text
+    text(.02 * default_display_width + 1, .03 * default_display_height + 1, ...
+        ['Shot: ' int2str(j) '/' int2str(num_images)], 'color', 'w', ...
+        'backgroundcolor', 'b');
+
+    % if there is stack text to display, display it
+    if (isappdata(0, 'stack_text') && ~isempty(getappdata(0, 'stack_text')))
+        stack_text = getappdata(0, 'stack_text');
+        text(.02 * default_display_width + 1, .1 * default_display_height + ...
+            1, stack_text{i}, 'color', 'w', 'backgroundcolor', 'blue');
     end
     
     subplot(1, 2, 2)

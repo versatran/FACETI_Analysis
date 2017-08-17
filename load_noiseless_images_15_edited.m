@@ -77,7 +77,8 @@ if ~background_checked
             rectangle('Position', sample_vector([3 1 4 2]), 'EdgeColor', ...
                 'w', 'LineWidth', 3, 'LineStyle', '-');
         end
-        if exist('draw_ROI', 'var')
+        if isappdata(0, 'draw_ROI')
+            draw_ROI = getappdata(0, 'draw_ROI');
             rectangle('Position', draw_ROI, 'LineWidth', 2, 'LineStyle', '--');
         end
         set(gca, 'CLim', [100, 500]);
@@ -131,10 +132,12 @@ if ~background_checked
     noise = getappdata(0, 'noise');
     original_noise = noise;
     setappdata(0, 'original_noise', original_noise);
-    if exist('draw_ROI', 'var')
-        noise = imcrop(noise, draw_ROI);
-        setappdata(0, 'noise', noise);
-    end
+%     if exist('draw_ROI', 'var')
+%     if isappdata(0, 'draw_ROI')
+%         draw_ROI = getappdata(0, 'draw_ROI');
+%         noise = imcrop(noise, draw_ROI);
+%         setappdata(0, 'noise', noise);
+%     end
     
     image_size = size(noise);
     vertsize = image_size(1);
@@ -165,9 +168,11 @@ if ~background_checked
             camera.zero_Gev_px = camera.zero_Gev_px + camera.default_ROI_Y - ...
                data.raw.images.(camera.name).ROI_Y(1);
         end
-        if exist('draw_ROI','var')
-            camera.zero_Gev_px = camera.zero_Gev_px - draw_ROI(2);
-        end
+%         if exist('draw_ROI','var')
+%         if isappdata(0, 'draw_ROI')
+%             draw_ROI = getappdata(0, 'draw_ROI');
+%             camera.zero_Gev_px = camera.zero_Gev_px - draw_ROI(2);
+%         end
         energy_calib_vector = get_energy_curve(camera.name, vertsize, ...
             camera.zero_Gev_px, resolution, theta0);
         setappdata(0, 'energy_calib_vector', energy_calib_vector);
@@ -229,12 +234,14 @@ if (isempty(this_image))
     end
 
     original_image = this_image;
-    if exist('draw_ROI', 'var')
-        % TODO: only do analysis on the ROI. i.e. cut the noise, cut the image to
-        % the ROI of the noise might not match the ROI of the image
-        this_image = imcrop(this_image, draw_ROI);
-        setappdata(0, 'this_image', this_image);
-    end
+%     if exist('draw_ROI', 'var')
+%     if isappdata(0, 'draw_ROI')
+%         draw_ROI = getappdata(0, 'draw_ROI');
+%         % TODO: only do analysis on the ROI. i.e. cut the noise, cut the image to
+%         % the ROI of the noise might not match the ROI of the image
+%         this_image = imcrop(this_image, draw_ROI);
+%         setappdata(0, 'this_image', this_image);
+%     end
 
     % scale background and subtract. These variables are determined in the
     % load_camera_config script
