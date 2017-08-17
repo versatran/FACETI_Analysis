@@ -70,31 +70,19 @@ if show_image % fix for odd(1) or even(0)
     image_axis = axesImage;
     set(figureImgTestGui, 'CurrentAxes', image_axis)
     if curr_image == 1
-        if exist('draw_ROI', 'var')
-            display_width = draw_ROI(3);
-            display_height = draw_ROI(4);
-            setappdata(0, 'display_width', display_width);
-            setappdata(0, 'display_height', display_height);
-            width_start = 1;
-            height_start = 1;
-            setappdata(0, 'height_start', height_start);
-            setappdata(0, 'width_start', width_start);
-            if exist('axis_limits_lineout', 'var')
-                axis_limits_lineout(3) = draw_ROI(3);
-                axis_limits_lineout(4) = draw_ROI(4);
-            end
-        else
-            horizsize = getappdata(0, 'horizsize');
-            vertsize = getappdata(0, 'vertsize');
-            display_width = horizsize;
-            display_height = vertsize;
-            setappdata(0, 'display_width', display_width);
-            setappdata(0, 'display_height', display_height);
-            width_start = 1;
-            height_start = 1;
-            setappdata(0, 'height_start', height_start);
-            setappdata(0, 'width_start', width_start);
-        end
+        horizsize = getappdata(0, 'horizsize');
+        vertsize = getappdata(0, 'vertsize');
+        display_width = horizsize;
+        display_height = vertsize;
+        setappdata(0, 'display_width', display_width);
+        setappdata(0, 'display_height', display_height);
+        setappdata(0, 'default_display_width', display_width);
+        setappdata(0, 'default_display_height', display_height);
+        width_start = 1;
+        height_start = 1;
+        setappdata(0, 'height_start', height_start);
+        setappdata(0, 'width_start', width_start);
+            
         %TODO:This will need to be set by me eventually!
         contained_p = get(figureImgTestGui, 'position');
         sub_p = get(gca, 'position');
@@ -108,6 +96,28 @@ if show_image % fix for odd(1) or even(0)
         setappdata(0, 'r2', r2);
 
         set(gca, 'fontsize', 15);
+    end
+    
+    % display a cropped version of the current image if either the current
+    % image or another one has been cropped before
+    if isappdata(0, 'draw_ROI')
+        % get the region of interest for the image
+        draw_ROI = getappdata(0, 'draw_ROI');
+        % temporarily set the current image to its cropped version
+        this_image = imcrop(this_image, draw_ROI);
+        % adjust the current display width and height
+        display_width = draw_ROI(3);
+        display_height = draw_ROI(4);
+        setappdata(0, 'display_width', display_width);
+        setappdata(0, 'display_height', display_height);
+        width_start = draw_ROI(1);
+        height_start = draw_ROI(2);
+        setappdata(0, 'height_start', height_start);
+        setappdata(0, 'width_start', width_start);
+        if exist('axis_limits_lineout', 'var')
+            axis_limits_lineout(3) = draw_ROI(3);
+            axis_limits_lineout(4) = draw_ROI(4);
+        end
     end
 
     % make the original image if diagnostic is on, otherwise work
@@ -142,6 +152,24 @@ if show_image % fix for odd(1) or even(0)
     if exist('axis_limits_image', 'var')
         axis(draw_ROI);
     end
+    
+    % set x-axis tick labels to appropriately represent the pixels being
+    % displayed
+    x_pixel_min = getappdata(0, 'width_start');
+    x_tick_labels = str2double(xticklabels());
+    xticklabels(num2str(floor(x_tick_labels + x_pixel_min - 1)));
+    
+    % set y-axis tick labels
+    if ~camera.energy_camera
+        % if the camera is not an energy camera, set the y-axis ticks to
+        % represent pixel values
+        y_pixel_min = getappdata(0, 'height_start');
+        y_tick_labels = str2double(yticklabels());
+        yticklabels(num2str(floor(y_tick_labels + y_pixel_min - 1)));
+    else
+        % TODO: the camera is an energy camera, so set the y-axis ticks to
+        % represent energy values
+    end
 
     % writing and drawing on the image
     height_start = getappdata(0, 'height_start');
@@ -149,16 +177,15 @@ if show_image % fix for odd(1) or even(0)
     width_start = getappdata(0, 'width_start');
     display_width = getappdata(0, 'display_width');
     
-    % draws shot number textbox and stack specific setting if
-    % multiple stacks            
-    text(.02 * display_width + width_start, .03 * display_height + ...
-        height_start, ['Shot: ' int2str(j) '/' int2str(num_images)], ...
-        'color', 'w', 'backgroundcolor', 'b');
+    % display shot number text
+    text(.02 * display_width + 1, .03 * display_height + 1, ...
+        ['Shot: ' int2str(j) '/' int2str(num_images)], 'color', 'w', ...
+        'backgroundcolor', 'b');
     
-    if exist('stack_text','var')
-        text(.02 * display_width + width_start, .1 * display_height ...
-            + height_start, stack_text{i}, 'color', 'w', ...
-            'backgroundcolor', 'blue');
+    % if there is stack text to display, display it
+    if (isappdata(0, 'stack_text') && ~isempty(getappdata(0, 'stack_text')))
+        text(.02 * display_width + 1, .1 * display_height + 1, ...
+            stack_text{i}, 'color', 'w', 'backgroundcolor', 'blue');
     end
 end
         
