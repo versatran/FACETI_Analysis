@@ -86,7 +86,8 @@ function [dir_beg, dir_mid, filename, varargout] = ...
                 isempty(regexp(pathstr, [expstr '_[0-9]*\.mat'], 'once'))
 			warning(['Neither a 2014+ data file, scan_info.mat file, nor a ' ...
                 'filenames.mat file:\n' pathstr]);
-		end
+        end
+        %BRIANNA NOTE: problem is right here !
 		if ~isempty(regexp(pathstr, [expstr '_[0-9]*\.mat'], 'once'))
 			data_source_type='2014';
 		else

@@ -97,7 +97,8 @@ function ImgTestGui_OpeningFcn(hObject, eventdata, handles, varargin)
         % prompt the user to select a source directory
         uiwait(msgbox(['Please select the directory containing the ' ...
             'NAS (Network Attached Storage) you would like to use.']));
-        
+        % BRIANNA NOTE: Issue resides in manually choosing your own drive
+        % when there are multiple drives. vv
         % allow the user to select a source directory
         changeSourceDirectoryButton_Callback( ...
                 handles.changeSourceDirectoryButton, eventdata, handles);
@@ -712,6 +713,8 @@ end
 function serverPopUpMenu_Callback(hObject, eventdata, handles)
     expPopUpMenu = handles.experimentPopUpMenu;
     source_dir = getappdata(0, 'source_dir');
+    
+    
     values = get(hObject, 'String');
     server_str = ['nas' filesep values{get(hObject, 'Value')} filesep];
     setappdata(0, 'server_str', server_str);
@@ -720,8 +723,12 @@ function serverPopUpMenu_Callback(hObject, eventdata, handles)
     set(expPopUpMenu, 'Value', 1);
     experimentPopUpMenu_Callback(handles.experimentPopUpMenu, eventdata, ...
         handles);
+    %deleting the above line of code will properly grab a path but will not
+    %load dataset
 end
 
+
+%BRIANNA NOTE: can we document what each function does
 function experimentPopUpMenu_Callback(hObject, eventdata, handles)
     yearPopUpMenu = handles.yearPopUpMenu;
     source_dir = getappdata(0, 'source_dir');
@@ -787,7 +794,7 @@ end
 
 function changeSourceDirectoryButton_Callback(~, eventdata, handles)
     % populate source directory text box with selected/default text
-    source_dir = getSourceDirectory();
+    source_dir = getSourceDirectory(); %BRIANNA NOTE: grabs the initial part of path
     set(handles.staticSourceDir, 'String', source_dir);
 
     % populate server pop-up menu with possible servers to choose from
@@ -796,11 +803,17 @@ function changeSourceDirectoryButton_Callback(~, eventdata, handles)
     set(handles.serverPopUpMenu, 'enable', 'on');
 
     % select the first list item by default
+    
     set(handles.serverPopUpMenu, 'Value', 1);
-    serverPopUpMenu_Callback(handles.serverPopUpMenu, eventdata, handles);
-
+    
+    
     % set these initial inputs for loading a dataset
+    % BRIANNA NOTE: Switched the following two lines of code and fixed an
+    % error. 
     setappdata(0, 'source_dir', source_dir);
+    
+    serverPopUpMenu_Callback(handles.serverPopUpMenu, eventdata, handles); 
+
 end
 
 function jumpToShotButton_Callback(~, ~, handles)
