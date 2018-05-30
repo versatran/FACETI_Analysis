@@ -21,8 +21,10 @@ function [dir_beg, dir_mid, filename, varargout] = ...
 			% prefix=getpref('FACET_data','prefix');
 			prefix=get_remoteprefix();
 			pathstr=fullfile(prefix, pathstr);
+            pathstr=convertCharsToStrings(pathstr);
+            prefix=convertCharsToStrings(prefix);
 			% Appending the prefix worked
-			if ~exist(pathstr)
+			if isempty(strfind(data_path,prefix))
 				% Ask if the user wants to fix the problem
 				answers={'Change prefix for this machine.','Locate file','Try again'};
 				button='';
@@ -46,7 +48,13 @@ function [dir_beg, dir_mid, filename, varargout] = ...
 				% Modifies nothing - will try same settings again.
 				case answers{3}
 				end
-			end
+			%Prefix is defined but file does not exist
+            else
+                %Informs the user that there is a broken dataset
+                f = msgbox({'File Not Found:'; 'Path does not lead to a .mat file. Program cannot open broken datasets'}, 'File Does Not Exist');
+                error('File Does Not Exist: Broken Dataset');
+                return;
+            end
 		% Prefix isn't defined
 		else
 			setpref('FACET_data','prefix','/Volumes/PWFA_4big');

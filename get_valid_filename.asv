@@ -21,8 +21,10 @@ function [dir_beg, dir_mid, filename, varargout] = ...
 			% prefix=getpref('FACET_data','prefix');
 			prefix=get_remoteprefix();
 			pathstr=fullfile(prefix, pathstr);
+            pathstr=convertCharsToStrings(pathstr);
+            prefix=convertCharsToStrings(prefix);
 			% Appending the prefix worked
-			if ~exist(pathstr)
+			if isempty(strfind(pathstr,prefix))
 				% Ask if the user wants to fix the problem
 				answers={'Change prefix for this machine.','Locate file','Try again'};
 				button='';
@@ -46,7 +48,13 @@ function [dir_beg, dir_mid, filename, varargout] = ...
 				% Modifies nothing - will try same settings again.
 				case answers{3}
 				end
-			end
+			%Prefix is defined but file does not exist
+            else
+                %Informs the user that there is a broken dataset
+                f = msgbox({'File Not Found: \n\n'; 'Path does not lead to a .mat file. Program cannot open broken datasets'}, 'File Does Not Exist');
+                error('File Does Not Exist');
+                return;
+            end
 		% Prefix isn't defined
 		else
 			setpref('FACET_data','prefix','/Volumes/PWFA_4big');
@@ -89,16 +97,7 @@ function [dir_beg, dir_mid, filename, varargout] = ...
         end
         %BRIANNA NOTE: problem is right here !
 		if ~isempty(regexp(pathstr, [expstr '_[0-9]*\.mat'], 'once'))
-			data_source_type=extractAfter(data_path, expstr);
-            if isempty(strfind(data_source_type, '\'))
-                if ~isempty(strfind(data_source_type, '/'))
-                    data_source_type = extractAfter(data_source_type, '/')
-                    data_source_type = extractBefore(data_source_type, '/')
-                end
-            else
-                data_source_type = extractAfter(data_source_type, '\')
-                data_source_type = extractBefore(data_source_type, '\')
-            end
+			data_source_type='2014';
 		else
 			data_source_type='2013';
 		end
@@ -108,7 +107,7 @@ function [dir_beg, dir_mid, filename, varargout] = ...
         % might consider switching from regexp to strfind
 		startind = strfind(pathstr, '/nas/nas-li20-pm0');
 		if isempty(startind)
-            startind = regexp(pathstr, '\nas\nas-li20-pm0', 'once');
+            startind = strfind(pathstr, '\nas\nas-li20-pm0');
             if isempty(startind)
                 error(['Does not point to a file with /nas/nas-li20-pm01 or ' ...
                     '/nas/nas-li20-pm00 in its path.']);
