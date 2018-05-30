@@ -17,7 +17,7 @@ function data = E200_load_data(pathstr, varargin)
 		expstr = varargin{1};
 	else
 		expstr = 'E200';
-	end
+    end
 	[dir_beg, dir_mid, filename, data_source_type] = ...
         get_valid_filename(pathstr, expstr);
 	

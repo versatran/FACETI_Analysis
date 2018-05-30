@@ -89,7 +89,16 @@ function [dir_beg, dir_mid, filename, varargout] = ...
         end
         %BRIANNA NOTE: problem is right here !
 		if ~isempty(regexp(pathstr, [expstr '_[0-9]*\.mat'], 'once'))
-			data_source_type='2014';
+			data_source_type=extractAfter(data_path, expstr);
+            if isempty(strfind(data_source_type, '\'))
+                if ~isempty(strfind(data_source_type, '/'))
+                    data_source_type = extractAfter(data_source_type, '/')
+                    data_source_type = extractBefore(data_source_type, '/')
+                end
+            else
+                data_source_type = extractAfter(data_source_type, '\')
+                data_source_type = extractBefore(data_source_type, '\')
+            end
 		else
 			data_source_type='2013';
 		end
@@ -99,7 +108,7 @@ function [dir_beg, dir_mid, filename, varargout] = ...
         % might consider switching from regexp to strfind
 		startind = strfind(pathstr, '/nas/nas-li20-pm0');
 		if isempty(startind)
-            startind = strfind(pathstr, '\nas\nas-li20-pm0');
+            startind = regexp(pathstr, '\nas\nas-li20-pm0', 'once');
             if isempty(startind)
                 error(['Does not point to a file with /nas/nas-li20-pm01 or ' ...
                     '/nas/nas-li20-pm00 in its path.']);
