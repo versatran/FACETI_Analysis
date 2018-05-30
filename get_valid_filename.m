@@ -23,13 +23,15 @@ function [dir_beg, dir_mid, filename, varargout] = ...
 			pathstr=fullfile(prefix, pathstr);
 			pathstr = convertCharsToStrings(pathstr);
             prefix = convertCharsToStrings(prefix);
-            % Appending the prefix worked
+            %Checks once more if the data_path contains the prefix
+            %If it does, it can be concluded that the file does not exist
             if ~isempty(strfind(data_path,prefix))
                %Informs the user that there is a broken dataset
                 f = msgbox({'File Not Found:'; 'Path does not lead to a .mat file. Program cannot open broken datasets'}, 'File Does Not Exist');
                 error('File Does Not Exist: Broken Dataset');
                 return; 
             end
+            % Appending the prefix worked
             if ~exist(pathstr)
 				% Ask if the user wants to fix the problem
 				answers={'Change prefix for this machine.','Locate file','Try again'};
