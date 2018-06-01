@@ -20,9 +20,6 @@ function [dir_beg, dir_mid, filename, varargout] = ...
 			% Append prefix
 			% prefix=getpref('FACET_data','prefix');
 			prefix=get_remoteprefix();
-			pathstr=fullfile(prefix, pathstr);
-			pathstr = convertCharsToStrings(pathstr);
-            prefix = convertCharsToStrings(prefix);
             %Checks once more if the data_path contains the prefix
             %If it does, it can be concluded that the file does not exist
             if ~isempty(strfind(data_path,prefix))
@@ -31,6 +28,7 @@ function [dir_beg, dir_mid, filename, varargout] = ...
                 error('File Does Not Exist: Broken Dataset');
                 return; 
             end
+            pathstr=fullfile(prefix, pathstr);
             % Appending the prefix worked
             if ~exist(pathstr)
 				% Ask if the user wants to fix the problem
