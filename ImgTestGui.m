@@ -690,7 +690,10 @@ function menuCorrelate_Callback(~, ~, ~)
             % creates the "linecut" option in the taskbar
             linecut_option = uimenu(c, 'Text', 'Linecut');
             item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
-            item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
+            item_addConditions = uimenu(linecut_option,'Label','Add Conditions');
+            
+            % figure out how to load a gui file. 
+            % item_addConditions.Callback(load('addConditionsGui.fig'));
             
             set(c, 'color', [1,1,1]);
             plot(sorted_x_values, matched_y_values);
