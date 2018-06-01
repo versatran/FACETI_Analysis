@@ -683,26 +683,16 @@ function menuCorrelate_Callback(~, ~, ~)
             revised_UID(j, :) = sorted_UID(index_y_UID_matched);
             sorted_x_values(j, :) = Y1(index_y_UID_matched);
 
-            % creates plot
-            c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
-                y_param ' ' dataset_str]);
-            set(c, 'color', [1,1,1]);
-            plot(sorted_x_values, matched_y_values);
-            plot_title = title([x_param ' vs. ' y_param]);
-            plot_xlabel = xlabel(x_param);
-            plot_ylabel = ylabel(y_param);
-            set(plot_xlabel, 'Interpreter', 'none');
-            set(plot_title, 'Interpreter', 'none');
-            set(plot_ylabel, 'Interpreter', 'none');
-        otherwise
-            % creates non-sorted plot. The lengths of these parameters are
+    end;
+           % creates non-sorted plot. The lengths of these parameters are
             % longer than the number of shots taken for the dataset
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                 y_param ' ' dataset_str]);
             
             %creates the "linecut" option in the taskbar
             linecut_option = uimenu(c, 'Text', 'Linecut');
-            linecut_gui = uimenu(linecut_option, 'Text', 'Open Linecut Options');
+            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
+            item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
             
             
             set(c, 'color', [1,1,1]);

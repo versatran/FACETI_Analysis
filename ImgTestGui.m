@@ -686,6 +686,12 @@ function menuCorrelate_Callback(~, ~, ~)
             % creates plot
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                 y_param ' ' dataset_str]);
+            
+            % creates the "linecut" option in the taskbar
+            linecut_option = uimenu(c, 'Text', 'Linecut');
+            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
+            item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
+            
             set(c, 'color', [1,1,1]);
             plot(sorted_x_values, matched_y_values);
             plot_title = title([x_param ' vs. ' y_param]);
@@ -700,7 +706,7 @@ function menuCorrelate_Callback(~, ~, ~)
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                 y_param ' ' dataset_str]);
             
-            %creates the "linecut" option in the taskbar
+            % creates the "linecut" option in the taskbar
             linecut_option = uimenu(c, 'Text', 'Linecut');
             item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
             item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
