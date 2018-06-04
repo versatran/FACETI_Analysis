@@ -152,4 +152,7 @@ function addCondition_pushButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 min = str2double(get(handles.minimum_edit, 'String'));
 max = str2double(get(handles.maximum_edit, 'String'));
+allConditions = get(handles.popupmenu1, 'String');
+condition_index = get(handles.popupmenu1, 'Value');
+condition = allConditions{condition_index}
 close;

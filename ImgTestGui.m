@@ -632,7 +632,7 @@ function menuCorrelate_Callback(~, ~, ~)
     
     % create empty cell array for converted parameters with more user friendly 
     % definitions
-    global converted_parameters;
+    
     converted_parameters = cell(num_parameters + 3,1);
     
     % convert to user friendly defined parameters
