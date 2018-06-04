@@ -712,9 +712,12 @@ function menuCorrelate_Callback(~, ~, ~)
     end
     % creates the "linecut" option in the taskbar
     linecut_option = uimenu(c, 'Text', 'Linecut');
-    item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
+    item_saveConditions = uimenu(linecut_option, 'Text', 'Save Condtions');
+    item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions', 'Separator', 'on');
     item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);       
-    item_saveConditions = uimenu(linecut_option, 'Text', 'Save Condtions', 'Separator', 'on');
+    item_deleteAllConditions = uimenu(linecut_option, 'Label', 'Delete All Conditions', 'Separator', 'on');
+    item_deleteCondition = uimenu(linecut_option, 'Label', 'Delete a Condition');
+    
     % opens "addConditionsGui"
     function openAddConditions(~,~,~)
         addConditionsGui(converted_parameters);
