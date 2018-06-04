@@ -51,7 +51,11 @@ function addConditionsGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to addConditionsGui (see VARARGIN)
-converted_parameters = varargin{1};
+if iscell(varargin{1}) 
+    
+if varargin{1} == 'deleteAll'
+    deleteAllConditions;
+end
 set(handles.popupmenu1, 'String', converted_parameters);
 initializeGlobal();
 % Choose default command line output for addConditionsGui
@@ -147,6 +151,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% initializes the global variables "count" and "conditions"
+% checks if they have already been initialized
 function initializeGlobal()
     global count;
     if isempty(count) 
@@ -157,6 +163,7 @@ function initializeGlobal()
         conditions = {}
     end
 
+% add conditions to global variable "conditions"
 function addCondition(item, min, max)
     global count;
     global conditions;
@@ -170,8 +177,8 @@ function deleteAllConditions()
     conditions = {};
     count = 1;
 
-function deleteCondition()
-        
+%pandacorn delete condition vs delete all conditions
+    
 % --- Executes on button press in addCondition_pushButton.
 function addCondition_pushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to addCondition_pushButton (see GCBO)
