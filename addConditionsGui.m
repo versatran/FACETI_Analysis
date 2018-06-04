@@ -51,9 +51,12 @@ function addConditionsGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to addConditionsGui (see VARARGIN)
-
+converted_parameters = varargin{1};
+set(handles.popupmenu1, 'String', converted_parameters);
 % Choose default command line output for addConditionsGui
 handles.output = hObject;
+
+
 
 % Update handles structure
 guidata(hObject, handles);

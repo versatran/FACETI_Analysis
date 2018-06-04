@@ -632,6 +632,7 @@ function menuCorrelate_Callback(~, ~, ~)
     
     % create empty cell array for converted parameters with more user friendly 
     % definitions
+    global converted_parameters;
     converted_parameters = cell(num_parameters + 3,1);
     
     % convert to user friendly defined parameters
@@ -723,7 +724,7 @@ function menuCorrelate_Callback(~, ~, ~)
             item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);
             % opens "addConditionsGui"
             function openAddConditions(~,~,~)
-                addConditionsGui();
+                addConditionsGui(converted_parameters);
             end
 end
 
