@@ -689,8 +689,12 @@ function menuCorrelate_Callback(~, ~, ~)
             
             % creates the "linecut" option in the taskbar
             linecut_option = uimenu(c, 'Text', 'Linecut');
-            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
-            item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
+            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions', 'Callback', @openAddConditions);
+            item_addConditions = uimenu(linecut_option,'Label','Add Conditions');
+            
+            function openAddConditions
+                addConditionsGui();
+            end
             
             set(c, 'color', [1,1,1]);
             plot(sorted_x_values, matched_y_values);

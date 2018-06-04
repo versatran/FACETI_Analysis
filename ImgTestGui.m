@@ -687,14 +687,6 @@ function menuCorrelate_Callback(~, ~, ~)
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                 y_param ' ' dataset_str]);
             
-            % creates the "linecut" option in the taskbar
-            linecut_option = uimenu(c, 'Text', 'Linecut');
-            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
-            item_addConditions = uimenu(linecut_option,'Label','Add Conditions');
-            
-            % figure out how to load a gui file. 
-            % item_addConditions.Callback(load('addConditionsGui.fig'));
-            
             set(c, 'color', [1,1,1]);
             plot(sorted_x_values, matched_y_values);
             plot_title = title([x_param ' vs. ' y_param]);
@@ -725,6 +717,14 @@ function menuCorrelate_Callback(~, ~, ~)
             set(plot_title, 'Interpreter', 'none');
             set(plot_ylabel, 'Interpreter', 'none');
     end
+     % creates the "linecut" option in the taskbar
+            linecut_option = uimenu(c, 'Text', 'Linecut');
+            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
+            item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);
+            % opens "addConditionsGui"
+            function openAddConditions(~,~,~)
+                addConditionsGui();
+            end
 end
 
 function serverPopUpMenu_Callback(hObject, eventdata, handles)
