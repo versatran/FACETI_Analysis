@@ -170,8 +170,8 @@ function deleteAllConditions()
     conditions = {};
     count = 1;
 
-%pandacorn delete condition vs delete all conditions
-    
+function deleteCondition()
+        
 % --- Executes on button press in addCondition_pushButton.
 function addCondition_pushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to addCondition_pushButton (see GCBO)

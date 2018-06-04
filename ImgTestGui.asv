@@ -632,6 +632,7 @@ function menuCorrelate_Callback(~, ~, ~)
     
     % create empty cell array for converted parameters with more user friendly 
     % definitions
+    
     converted_parameters = cell(num_parameters + 3,1);
     
     % convert to user friendly defined parameters
@@ -687,15 +688,6 @@ function menuCorrelate_Callback(~, ~, ~)
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                 y_param ' ' dataset_str]);
             
-            % creates the "linecut" option in the taskbar
-            linecut_option = uimenu(c, 'Text', 'Linecut');
-            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions', 'Callback', @openAddConditions);
-            item_addConditions = uimenu(linecut_option,'Label','Add Conditions');
-            
-            function openAddConditions
-                addConditionsGui();
-            end
-            
             set(c, 'color', [1,1,1]);
             plot(sorted_x_values, matched_y_values);
             plot_title = title([x_param ' vs. ' y_param]);
@@ -708,14 +700,7 @@ function menuCorrelate_Callback(~, ~, ~)
             % creates non-sorted plot. The lengths of these parameters are
             % longer than the number of shots taken for the dataset
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
-                y_param ' ' dataset_str]);
-            
-            % creates the "linecut" option in the taskbar
-            
-            linecut_option = uimenu(c, 'Text', 'Linecut');
-            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
-            item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
-            
+                y_param ' ' dataset_str])
             
             set(c, 'color', [1,1,1]);
             scatter(x_values, y_values);
@@ -726,6 +711,14 @@ function menuCorrelate_Callback(~, ~, ~)
             set(plot_title, 'Interpreter', 'none');
             set(plot_ylabel, 'Interpreter', 'none');
     end
+     % creates the "linecut" option in the taskbar
+            linecut_option = uimenu(c, 'Text', 'Linecut');
+            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
+            item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);
+            % opens "addConditionsGui"
+            function openAddConditions(~,~,~)
+                addConditionsGui(converted_parameters);
+            end
 end
 
 function serverPopUpMenu_Callback(hObject, eventdata, handles)

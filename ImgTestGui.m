@@ -701,14 +701,6 @@ function menuCorrelate_Callback(~, ~, ~)
             % longer than the number of shots taken for the dataset
             c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                 y_param ' ' dataset_str]);
-            
-            % creates the "linecut" option in the taskbar
-            
-            linecut_option = uimenu(c, 'Text', 'Linecut');
-            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
-            item_addConditions = uimenu(linecut_option, 'Text', 'Add Condition');
-            
-            
             set(c, 'color', [1,1,1]);
             scatter(x_values, y_values);
             plot_title = title([x_param ' vs. ' y_param]);
@@ -718,15 +710,21 @@ function menuCorrelate_Callback(~, ~, ~)
             set(plot_title, 'Interpreter', 'none');
             set(plot_ylabel, 'Interpreter', 'none');
     end
-     % creates the "linecut" option in the taskbar
-            linecut_option = uimenu(c, 'Text', 'Linecut');
-            item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
-            item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);
-            % opens "addConditionsGui"
-            function openAddConditions(~,~,~)
-                addConditionsGui(converted_parameters);
-            end
+    % creates the "linecut" option in the taskbar
+    linecut_option = uimenu(c, 'Text', 'Linecut');
+    item_viewConditions = uimenu(linecut_option, 'Text', 'View Conditions');
+    item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);       
+    item_saveConditions = uimenu(linecut_option, 'Text', 'Save Condtions', 'Separator', 'on');
+    % opens "addConditionsGui"
+    function openAddConditions(~,~,~)
+        addConditionsGui(converted_parameters);
+    end
 end
+
+% gets conditions from addConditionsGui
+
+
+
 
 function serverPopUpMenu_Callback(hObject, eventdata, handles)
     expPopUpMenu = handles.experimentPopUpMenu;
