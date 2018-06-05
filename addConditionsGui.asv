@@ -156,7 +156,11 @@ function addCondition(item, min, max)
     global count;
     global conditions;
     cell = {item, min, max};
-    conditions{count} = cell; 
+    if count = 1
+        conditions(count) = cell;
+    else
+        conditions{count} = cell; 
+    end
     count = count + 1;
     linecutOptions('set', conditions, count);
  
@@ -165,7 +169,7 @@ function deleteAllConditions()
     global conditions;
     conditions = {};
     count = 1;
-    linecutOptions('set');
+    linecutOptions('set', count, conditions);
 
 %pandacorn delete condition vs delete all conditions
     

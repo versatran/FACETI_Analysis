@@ -717,17 +717,20 @@ function menuCorrelate_Callback(~, ~, ~)
     item_addConditions = uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);       
     item_deleteAllConditions = uimenu(linecut_option, 'Label', 'Delete All Conditions', 'Separator', 'on', ... 
         'Callback', @deleteAll_Callback);
-    item_deleteCondition = uimenu(linecut_option, 'Label', 'Delete a Condition');
+    item_deleteCondition = uimenu(linecut_option, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
     
     % opens "addConditionsGui"
     function openAddConditions(~,~,~)
         linecutOptions('add', converted_parameters);
     end
     function deleteAll_Callback(~,~,~)
-        addConditionsGui('deleteAll');
+        linecutOptions('deleteAll');
     end
     function openViewConditions(~,~,~)
         linecutOptions('view');
+    end
+    function deleteOne(~,~,~)
+        linecutOptions('delete');
     end
 end
 

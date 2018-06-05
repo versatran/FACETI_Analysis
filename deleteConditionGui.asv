@@ -1,35 +1,35 @@
-function varargout = viewConditionsGui(varargin)
-% VIEWCONDITIONSGUI MATLAB code for viewConditionsGui.fig
-%      VIEWCONDITIONSGUI, by itself, creates a new VIEWCONDITIONSGUI or raises the existing
+function varargout = deleteConditionGui(varargin)
+% DELETECONDITIONGUI MATLAB code for deleteConditionGui.fig
+%      DELETECONDITIONGUI, by itself, creates a new DELETECONDITIONGUI or raises the existing
 %      singleton*.
 %
-%      H = VIEWCONDITIONSGUI returns the handle to a new VIEWCONDITIONSGUI or the handle to
+%      H = DELETECONDITIONGUI returns the handle to a new DELETECONDITIONGUI or the handle to
 %      the existing singleton*.
 %
-%      VIEWCONDITIONSGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in VIEWCONDITIONSGUI.M with the given input arguments.
+%      DELETECONDITIONGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in DELETECONDITIONGUI.M with the given input arguments.
 %
-%      VIEWCONDITIONSGUI('Property','Value',...) creates a new VIEWCONDITIONSGUI or raises the
+%      DELETECONDITIONGUI('Property','Value',...) creates a new DELETECONDITIONGUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before viewConditionsGui_OpeningFcn gets called.  An
+%      applied to the GUI before deleteConditionGui_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to viewConditionsGui_OpeningFcn via varargin.
+%      stop.  All inputs are passed to deleteConditionGui_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help viewConditionsGui
+% Edit the above text to modify the response to help deleteConditionGui
 
-% Last Modified by GUIDE v2.5 05-Jun-2018 12:00:25
+% Last Modified by GUIDE v2.5 05-Jun-2018 12:45:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @viewConditionsGui_OpeningFcn, ...
-                   'gui_OutputFcn',  @viewConditionsGui_OutputFcn, ...
+                   'gui_OpeningFcn', @deleteConditionGui_OpeningFcn, ...
+                   'gui_OutputFcn',  @deleteConditionGui_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,25 +44,27 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before viewConditionsGui is made visible.
-function viewConditionsGui_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before deleteConditionGui is made visible.
+function deleteConditionGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to viewConditionsGui (see VARARGIN)
+% varargin   command line arguments to deleteConditionGui (see VARARGIN)
 global conditions;
-conditions = varargin{1};
+conditions = varargin{2};
 separateCells();
+global count;
+count = varargin{1};
 global names;
 set(handles.conditionsPopUpMenu, 'String', names); 
-% Choose default command line output for viewConditionsGui
+% Choose default command line output for deleteConditionGui
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes viewConditionsGui wait for user response (see UIRESUME)
+% UIWAIT makes deleteConditionGui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 function separateCells() 
@@ -75,7 +77,7 @@ function separateCells()
     max = {};
     [~, length] = size(conditions);
     for i = 1:length
-        items = conditions{i}
+        items = conditions{i};
         names{i} = items(1);
         min{i} = items(2);
         max{i} = items(3);
@@ -83,7 +85,7 @@ function separateCells()
     names = string(names);
     
 % --- Outputs from this function are returned to the command line.
-function varargout = viewConditionsGui_OutputFcn(hObject, eventdata, handles) 
+function varargout = deleteConditionGui_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -92,11 +94,23 @@ function varargout = viewConditionsGui_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-% --- Executes on button press in savePushButton.
-function savePushButton_Callback(hObject, eventdata, handles)
-% hObject    handle to savePushButton (see GCBO)
+% --- Executes on button press in deletePushButton.
+function deletePushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to deletePushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global conditions;
+global count;
+index = get(handles.conditionsPopUpMenu, 'Value');
+leftOver = index - size(conditions);
+for i = index:(leftOver-1);
+    conditions{i} = conditions{i+1};
+end
+if count == 1
+   conditions = {}; 
+end
+count = count - 1;
+linecutOptions('set', count, conditions);
 close;
 
 % --- Executes on button press in closePushButton.
@@ -117,10 +131,11 @@ function conditionsPopUpMenu_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from conditionsPopUpMenu
 index = get(handles.conditionsPopUpMenu, 'Value');
 global min;
-minimum = min(index);
-maximum = max(index);
+global max;
+minimum = string(min(index));
+maximum = string(max(index));
 set(handles.minimum_text, 'String', minimum);
-set(handles.maximum_
+set(handles.maximum_text, 'String', maximum);
 
 % --- Executes during object creation, after setting all properties.
 function conditionsPopUpMenu_CreateFcn(hObject, eventdata, handles)

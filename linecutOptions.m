@@ -18,14 +18,40 @@ function linecutOptions(varargin)
             addConditionsGui(varargin{2}, count, conditions);
         case 'view'
             viewConditionsGui(conditions);
+        case 'delete'
+            deleteConditionGui(count, conditions);
+        case 'deleteAll'
+            deleteAll();
+        case 'deleteCondition'
+            deleteCondition(varargin{2});
     end
 end
+
+function deleteCondition(index)
+    global count;
+    global conditions;
+    leftOver = index - size(conditions);
+    conditions(index) = [];
+    for i = index:(leftOver-1);
+        conditions{i} = conditions{i+1};
+    end
+    if count == 1
+        conditions = {}; 
+    end
+    count = count - 1;
+end
     
+function deleteAll() 
+    global conditions;
+    global count;
+    conditions = {};
+    count = 0;
+end
     
 function initializeGlobal()
     global count;
     if isempty(count) 
-        count = 1;
+        count = 0;
     end
     global conditions;
     if isempty(conditions)
@@ -38,6 +64,6 @@ function setGlobal(conval, countval)
     global conditions;
     if ~isempty(conval)
         conditions = conval;
-    end;
+    end
     count = countval;
 end

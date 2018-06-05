@@ -156,8 +156,8 @@ function addCondition(item, min, max)
     global count;
     global conditions;
     cell = {item, min, max};
-    conditions{count} = cell; 
     count = count + 1;
+    conditions{count} = cell; 
     linecutOptions('set', conditions, count);
  
 function deleteAllConditions() 
