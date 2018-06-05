@@ -52,16 +52,12 @@ function addConditionsGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to addConditionsGui (see VARARGIN)
 
-unknown = varargin{1};
-if iscell(unknown)
-    converted_parameters = varargin{1};
-    unknown = '';
-elseif unknown == 'deleteAll'
-    converted_parameters = 'deleted all';
-    deleteAllConditions();
-end
+converted_parameters = varargin{1};
+global count;
+global conditions;
+count = varargin{2};
+conditions = varargin{3};
 set(handles.popupmenu1, 'String', converted_parameters);
-initializeGlobal();
 % Choose default command line output for addConditionsGui
 
 handles.output = hObject;
@@ -155,31 +151,21 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-% initializes the global variables "count" and "conditions"
-% checks if they have already been initialized
-function initializeGlobal()
-    global count;
-    if isempty(count) 
-        count = 1;
-    end
-    global conditions;
-    if isempty(conditions)
-        conditions = {}
-    end
-
 % add conditions to global variable "conditions"
 function addCondition(item, min, max)
     global count;
     global conditions;
-    cell = {item, min, max}
-    conditions{count} = cell 
+    cell = {item, min, max};
+    conditions{count} = cell; 
     count = count + 1;
+    linecutOptions('set', conditions, count);
  
 function deleteAllConditions() 
     global count;
     global conditions;
     conditions = {};
     count = 1;
+    linecutOptions('set', count, conditions);
 
 %pandacorn delete condition vs delete all conditions
     
