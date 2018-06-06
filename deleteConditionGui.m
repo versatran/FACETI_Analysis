@@ -99,11 +99,31 @@ function deletePushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to deletePushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global conditions;
-global count;
 index = get(handles.conditionsPopUpMenu, 'Value');
-linecutOptions('deleteCondition', index);
-close;
+global names
+global min
+global max
+condition = names{index};
+minimum = min{index};
+if iscell(minimum)
+    minimum = minimum{1};
+end
+maximum = max{index};
+if iscell(maximum)
+    maximum = maximum{1};
+end
+msg1 = 'Are you sure you want to delete: ';
+msg2 = sprintf('minimum : %f', minimum);
+msg3 = sprintf('maximum : %f', maximum);
+answer = questdlg(strvcat(msg1, condition, msg2, msg3), 'Deletion', ...
+    'Yes', 'No', 'No');
+switch answer
+    case 'Yes'
+        linecutOptions('deleteCondition', index);
+        close;
+    otherwise
+        close;
+end
 
 % --- Executes on button press in closePushButton.
 function closePushButton_Callback(hObject, eventdata, handles)
