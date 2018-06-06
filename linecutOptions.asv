@@ -83,7 +83,16 @@ answer = questdlg('Are you sure you want to save these conditions?', 'Save All C
    switch answer
        case 'Yes'
            [file, path, index] = uiputfile('.m', 'Save Conditions', 'UntitledConditions.m');
-           filename = strcat(path,file,name);
-           %save(filename, conditions, count);
+           filename = strcat(path, file);
+           save(filename, 'conditions', 'count');
    end
+end
+
+function loadConditions()
+    [file, path] = uigetdir('', 'Select Source Directory');
+    filename = strcat(path, file);
+    global conditions
+    conditions = load(filename, 'conditions');
+    global count
+    count = load(filename, 'count');
 end

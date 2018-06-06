@@ -26,6 +26,8 @@ function linecutOptions(varargin)
             deleteCondition(varargin{2});
         case 'save'
             saveConditions();
+        case 'load'
+            loadConditions();
         otherwise
             msgbox('Code error: Input was not a proper command', 'Fix Error');
     end
@@ -36,7 +38,7 @@ function deleteCondition(index)
     global conditions;
     leftOver = index - size(conditions);
     conditions(index) = [];
-    for i = index:(leftOver-1);
+    for i = index:(leftOver-1)
         conditions{i} = conditions{i+1};
     end
     if count == 1
@@ -86,4 +88,14 @@ answer = questdlg('Are you sure you want to save these conditions?', 'Save All C
            filename = strcat(path, file);
            save(filename, 'conditions', 'count');
    end
+end
+
+function loadConditions()
+    [file, path] = uigetfile('.m', 'Select Saved Condition(s)');
+    filename = strcat(path, file);
+    data = importdata(filename);
+    global count
+    count = data.count;
+    global conditions
+    conditions = data.conditions;
 end
