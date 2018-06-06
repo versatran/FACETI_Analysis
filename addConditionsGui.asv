@@ -156,13 +156,12 @@ function addCondition(item, min, max)
     global count;
     global conditions;
     if max < min
-        uiwait (msgbox('ERROR: Maximum value is less then minimum value. Please try again', 'Cannot Add Condition'));
+        uiwait (msgbox('ERROR: Maximum value is less then minimum value. Please try again', 'Cannot Add Condition');
     else
         cell = {item, min, max};
         count = count + 1;
         conditions{count} = cell; 
         linecutOptions('set', conditions, count);
-        close;
     end
  
 function deleteAllConditions() 
@@ -186,3 +185,4 @@ allConditions = get(handles.popupmenu1, 'String');
 condition_index = get(handles.popupmenu1, 'Value');
 condition = allConditions{condition_index}
 addCondition(condition, min, max);
+close;
