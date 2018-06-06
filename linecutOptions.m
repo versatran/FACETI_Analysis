@@ -84,7 +84,7 @@ global conditions;
 answer = questdlg('Are you sure you want to save these conditions?', 'Save All Conditions', 'Yes', 'No', 'Yes');
    switch answer
        case 'Yes'
-           [file, path, index] = uiputfile('.m', 'Save Conditions', 'UntitledConditions.m');
+           [file, path] = uiputfile('.m', 'Save Conditions', 'UntitledConditions.m');
            filename = strcat(path, file);
            save(filename, 'conditions', 'count');
    end
@@ -95,7 +95,7 @@ function loadConditions()
     filename = strcat(path, file);
     data = importdata(filename);
     global count
+    global conditions;
     count = data.count;
-    global conditions
     conditions = data.conditions;
 end
