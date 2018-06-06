@@ -24,6 +24,8 @@ function linecutOptions(varargin)
             deleteAll();
         case 'deleteCondition'
             deleteCondition(varargin{2});
+        case 'save'
+            saveConditions();
         otherwise
             msgbox('Code error: Input was not a proper command', 'Fix Error');
     end
@@ -80,8 +82,8 @@ global conditions;
 answer = questdlg('Are you sure you want to save these conditions?', 'Save All Conditions', 'Yes', 'No', 'Yes');
    switch answer
        case 'Yes'
-           msgbox('Please save your data under your drives "conditions" folder', 'Save Conditions');
-           source_dir = getSourceDirectory();
-           
+           [file, path, index] = uiputfile('.m', 'Save Conditions', 'UntitledConditions.m');
+           filename = strcat(path, file);
+           save(filename, 'conditions', 'count');
    end
 end
