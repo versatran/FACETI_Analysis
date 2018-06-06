@@ -41,11 +41,15 @@ function deleteCondition(index)
     count = count - 1;
 end
     
-function deleteAll() 
+function deleteAll()
     global conditions;
     global count;
-    conditions = {};
-    count = 0;
+    answer = questdlg('Are you sure you want to delete all conditions?', 'Deletion', 'Yes', 'No', 'Yes');
+    switch answer
+        case 'Yes'
+            conditions = {};
+            count = 0;
+    end
 end
     
 function initializeGlobal()

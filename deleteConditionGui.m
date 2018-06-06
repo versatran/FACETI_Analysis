@@ -116,7 +116,7 @@ msg1 = 'Are you sure you want to delete: ';
 msg2 = sprintf('minimum : %f', minimum);
 msg3 = sprintf('maximum : %f', maximum);
 answer = questdlg(strvcat(msg1, condition, msg2, msg3), 'Deletion', ...
-    'Yes', 'No', 'No');
+    'Yes', 'No', 'Yes');
 switch answer
     case 'Yes'
         linecutOptions('deleteCondition', index);
