@@ -11,16 +11,21 @@ function newValues = brf_get_Values(varargin)
     valUID = varargin{1};
     values = varargin{2};
     conUID = varargin{3};
-    key = size(conUID);
+    key = length(conUID);
     newValues = {};
-
-    index = 1;
+    count = 1;
     
     msgbox('Finding Values...');
-    for i = 1:size(values)
-        if ~isempty(conUID{mod(key,valUID{i}), 1})
-            newValues{index} = values{i};
-            index = index + 1;
+    for i = 1:length(values)
+        index = mod(valUID(i), key);
+        if conUID{index, 1, 1} > 1
+            for k = 2:conUID{index, 1, 1}
+                if conUID{index, 1, k} == valUID(i)
+                    newValues{count} = values(i);
+                    count = count+1;
+                    break;
+                end
+            end
         end
     end
 end

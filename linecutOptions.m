@@ -29,20 +29,22 @@ function linecutOptions(varargin)
         case 'load'
             loadConditions();
         case 'get_x'
-            global conditions
             UID = varargin{2};
-            values = varargin{3};
-            for i = 1:size(conditions);
-                conUIDs = brf_get_UIDs(UID, values, conditions{i});
-                x_values = brf_get_Values(UID, values, conUIDs);
+            x_values = varargin{3};
+            param = varargin{4};
+            for i = 1:size(conditions)
+                % values must be the ones related to the condition :P
+                % otherwise it works :D
+                conUIDs = brf_get_UIDs(param, conditions{i});
+                x_values = brf_get_Values(UID, x_values, conUIDs);
             end
         case 'get_y'
-            global conditions
             UID = varargin{2};
-            values = varargin{3};
-            for i = 1:size(conditions);
-                conUIDs = brf_get_UIDs(UID, values, conditions{i});
-                y_values = brf_get_Values(UID, values, conUIDs);
+            y_values = varargin{3};
+            param = varargin{4};
+            for i = 1:size(conditions)
+                conUIDs = brf_get_UIDs(param, conditions{i});
+                y_values = brf_get_Values(UID, y_values, conUIDs);
             end
         otherwise
             msgbox('Code error: Input was not a proper command', 'Fix Error');

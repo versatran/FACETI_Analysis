@@ -5,25 +5,36 @@
 % This is the FIRST step to getting the values to be plotted with linecuts
 
 % Parameters should be entered as followed:
-% (UID's, values, condition)
+% (parameters, condition)
 % Output the UID's found from the corresponding values
-function brf_get_UIDs(varargin)
-    UIDs = varargin{1};
+function newUIDs = brf_get_UIDs(varargin)
+    parameters = varargin{1};
     values = varargin{2};
     condition = varargin{3};
     min = condition{2};
     max = condition{3};
-    newUIDs = {};
-    index = 1;
+    
+    param_str = string(parameters);
+    
+    index = find(param_str==condition{1});
+    
+    [UIDs
+    
+    key = 1999;
+    a = msgbox('Initializing matrix...');
+    for i = 1:key
+        newUIDs{i, 1, 1} = 1;
+    end
+    UID_index = 1;
+    delete(a);
     msgbox('Finding UIDs...');
-    for i = 1:size(values)
-        if values{i} > min && values{i} < max
-            newUIDs{index} = UIDs{i};
-            index = index + 1;
+    
+    for i = 1:length(values)
+        if values(i) > min && values(i) < max
+            UID_index = mod(UIDs(i), key);
+            list_index = newUIDs{UID_index, 1, 1} + 1;
+            newUIDs{UID_index, 1, list_index} = UIDs(i);
+            newUIDs{UID_index, 1, 1} = list_index;
         end
     end
-    if isempty(newUIDs)
-        error('No matching UIDs for this condition');
-    end
-    
 end

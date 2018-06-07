@@ -722,8 +722,8 @@ function menuCorrelate_Callback(~, ~, ~)
     
     % opens "addConditionsGui"
     function apply_Callback(~,~,~)
-        linecutOptions('get_x', x_UID, x_values);
-        linecutOptions('get_y', y_UID, y_values);
+        linecutOptions('get_x', x_UID, x_values, converted_parameters);
+        linecutOptions('get_y', y_UID, y_values, converted_parameters);
     end
     function openAddConditions(~,~,~)
         linecutOptions('add', converted_parameters);
