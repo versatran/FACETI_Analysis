@@ -720,7 +720,6 @@ function menuCorrelate_Callback(~, ~, ~)
         'Callback', @deleteAll_Callback);
     uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
     
-    % opens "addConditionsGui"
     function apply_Callback(~,~,~)
         linecutOptions('get_x', x_UID, x_values, converted_parameters);
         linecutOptions('get_y', y_UID, y_values, converted_parameters);
