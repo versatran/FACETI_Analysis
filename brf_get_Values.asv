@@ -7,20 +7,20 @@
 % (UIDs of values, values to pick from, condition's UIDs)
 % Output the values found with the UID's
 
-function newValues = brf_get_Values(varargin)
+function brf_get_Values(varargin)
     valUID = varargin{1};
     values = varargin{2};
     conUID = varargin{3};
-    key = size(conUID);
+    
     newValues = {};
-
+    
+    currentUID = conUID{1};
     index = 1;
     
-    msgbox('Finding Values...');
+    % This should work because the UID's are in numerical order. If not,
+    % result in n^2 run time or figure out another way to do this. 
     for i = 1:size(values)
-        if ~isempty(conUID{mod(key,valUID{i}), 1})
-            newValues{index} = values{i};
-            index = index + 1;
+        if isempty(
         end
     end
 end
