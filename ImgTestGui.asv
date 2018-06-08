@@ -658,7 +658,7 @@ function menuCorrelate_Callback(~, ~, ~)
 
     % ask to sort x parameter. If selected, sorts x parameter and rearranges y
     % parameter values following the sorted indexes
-    c = correlate_plot(x_values, x_UID, y_values, y_UID)
+
     % creates the "linecut" option in the taskbar
     linecut_option = uimenu(c, 'Text', 'Linecut');
     uimenu(linecut_option, 'Text', 'Apply Current Conditions', 'Callback', @apply_Callback);
@@ -671,69 +671,64 @@ function menuCorrelate_Callback(~, ~, ~)
         'Callback', @deleteAll_Callback);
     uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
     
-    function c = correlate_plot(x_val, xuid, y_val, yuid)
-        sort_q = questdlg('Would you like your x_parameter sorted?');
+    function plot(x_val, x_UID, y_val, y_UID)
+            sort_q = questdlg('Would you like your x_parameter sorted?');
 
-        switch sort_q
-            case 'Yes'
-                % make the sort vector from x parameter
-                unique_sort_id = unique(xuid);
-                if length(unique_sort_id) ~= length(xuid)
-                    error(['repetative UIDs exist in the sort dataset. Program ' ...
-                        'terminated']);
-                end
-                [Y1, I1] = sort(x_val);        
-                sorted_UID = xuid(I1);
+    switch sort_q
+        case 'Yes'
+            % make the sort vector from x parameter
+            unique_sort_id = unique(x_UID);
+            if length(unique_sort_id) ~= length(x_UID)
+                error(['repetative UIDs exist in the sort dataset. Program ' ...
+                    'terminated']);
+            end
+            [Y1, I1] = sort(x_values);        
+            sorted_UID = x_UID(I1);
 
-                % match the UIDs with the parameter values. This discards parameter
-                % values that do not have an associated shot to create vectors of
-                % same length
-                 j = 1;
-                 [~, index_y_UID_matched, index_sorted_UID] = ...
-                     intersect(sorted_UID, yuid(j, :), 'stable');
+            % match the UIDs with the parameter values. This discards parameter
+            % values that do not have an associated shot to create vectors of
+            % same length
+             j = 1;
+             [~, index_y_UID_matched, index_sorted_UID] = ...
+                 intersect(sorted_UID, y_UID(j, :), 'stable');
 
-                matched_y_values(j, :) = y_val(j, index_sorted_UID);    
-                revised_UID(j, :) = sorted_UID(index_y_UID_matched);
-                sorted_x_values(j, :) = Y1(index_y_UID_matched);
+            matched_y_values(j, :) = y_values(j, index_sorted_UID);    
+            revised_UID(j, :) = sorted_UID(index_y_UID_matched);
+            sorted_x_values(j, :) = Y1(index_y_UID_matched);
 
-                % creates plot
-                c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
-                    y_param ' ' dataset_str]);
+            % creates plot
+            c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
+                y_param ' ' dataset_str]);
             
-                set(c, 'color', [1,1,1]);
-                plot(sorted_x_values, matched_y_values);
-                plot_title = title([x_param ' vs. ' y_param]);
-                plot_xlabel = xlabel(x_param);
-                plot_ylabel = ylabel(y_param);
-                set(plot_xlabel, 'Interpreter', 'none');
-                set(plot_title, 'Interpreter', 'none');
-                set(plot_ylabel, 'Interpreter', 'none');
+            set(c, 'color', [1,1,1]);
+            plot(sorted_x_values, matched_y_values);
+            plot_title = title([x_param ' vs. ' y_param]);
+            plot_xlabel = xlabel(x_param);
+            plot_ylabel = ylabel(y_param);
+            set(plot_xlabel, 'Interpreter', 'none');
+            set(plot_title, 'Interpreter', 'none');
+            set(plot_ylabel, 'Interpreter', 'none');
         otherwise
-                % creates non-sorted plot. The lengths of these parameters are
-                % longer than the number of shots taken for the dataset
-                c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
-                    y_param ' ' dataset_str]);
-                set(c, 'color', [1,1,1]);
-                scatter(x_val, y_val);
-                plot_title = title([x_param ' vs. ' y_param]);
-                plot_xlabel = xlabel(x_param);
-                plot_ylabel = ylabel(y_param);
-                set(plot_xlabel, 'Interpreter', 'none');
-                set(plot_title, 'Interpreter', 'none');
-                set(plot_ylabel, 'Interpreter', 'none');
-        end
+            % creates non-sorted plot. The lengths of these parameters are
+            % longer than the number of shots taken for the dataset
+            c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
+                y_param ' ' dataset_str]);
+            set(c, 'color', [1,1,1]);
+            scatter(x_values, y_values);
+            plot_title = title([x_param ' vs. ' y_param]);
+            plot_xlabel = xlabel(x_param);
+            plot_ylabel = ylabel(y_param);
+            set(plot_xlabel, 'Interpreter', 'none');
+            set(plot_title, 'Interpreter', 'none');
+            set(plot_ylabel, 'Interpreter', 'none');
+    end
     end
         
     function apply_Callback(~,~,~)
         new_x_values = linecutOptions('get values', x_UID, x_values, converted_parameters);
-        new_x_values = cell2mat(new_x_values);
         new_x_UID = linecutOptions('get UIDs', x_UID, x_values, converted_parameters);
-        new_x_UID = cell2mat(new_x_UID);
         new_y_values = linecutOptions('get values', y_UID, y_values, converted_parameters);
-        new_y_values = cell2mat(new_y_values);
         new_y_UID = linecutOptions('get UIDs', x_UID, x_values, converted_parameters);
-        new_y_UID = cell2mat(new_y_UID);
-        correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);
         
     end
     function openAddConditions(~,~,~)

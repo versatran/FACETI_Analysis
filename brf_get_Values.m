@@ -7,12 +7,13 @@
 % (UIDs of values, values to pick from, condition's UIDs)
 % Output the values found with the UID's
 
-function newValues = brf_get_Values(varargin)
+function [newValues, UIDs] = brf_get_Values(varargin)
     valUID = varargin{1};
     values = varargin{2};
     conUID = varargin{3};
     key = length(conUID);
     newValues = {};
+    UIDs = {};
     count = 1;
     
     msgbox('Finding Values...');
@@ -21,7 +22,8 @@ function newValues = brf_get_Values(varargin)
         if conUID{index, 1, 1} > 1
             for k = 2:conUID{index, 1, 1}
                 if conUID{index, 1, k} == valUID(i)
-                    newValues{count} = values(i);
+                    newValues{count} = values(i)
+                    UIDs{count} = valUID(i);
                     count = count+1;
                     break;
                 end

@@ -4,7 +4,7 @@
 % having to be consistantly passed through
 
 % Author: Brianna Florio
-function linecutOptions(varargin)
+function varargout = linecutOptions(varargin)
     initializeGlobal();
     input = varargin{1};
     global count;
@@ -28,24 +28,27 @@ function linecutOptions(varargin)
             saveConditions();
         case 'load'
             loadConditions();
-        case 'get_x'
-            UID = varargin{2};
-            x_values = varargin{3};
+        case 'get values'
+            UIDs = varargin{2};
+            values = varargin{3};
             param = varargin{4};
-            for i = 1:size(conditions)
-                % values must be the ones related to the condition :P
-                % otherwise it works :D
-                conUIDs = brf_get_UIDs(param, conditions{i});
-                x_values = brf_get_Values(UID, x_values, conUIDs);
-            end
-        case 'get_y'
-            UID = varargin{2};
-            y_values = varargin{3};
-            param = varargin{4};
+            newValues = cell(1, length(conditions));
             for i = 1:size(conditions)
                 conUIDs = brf_get_UIDs(param, conditions{i});
-                y_values = brf_get_Values(UID, y_values, conUIDs);
+                [newValues{1, i}, ~] = brf_get_Values(UIDs, values, conUIDs);    
             end
+            varargout = newValues;
+        case 'get UIDs'
+            
+            UIDs = varargin{2};
+            values = varargin{3};
+            param = varargin{4};
+            newUIDs = cell(1, length(conditions));
+            for i = 1:size(conditions)
+                conUIDs = brf_get_UIDs(param, conditions{i});
+                [~ , newUIDs{1, i}] = brf_get_Values(UIDs, values, conUIDs);     
+            end
+            varargout = newUIDs;
         otherwise
             msgbox('Code error: Input was not a proper command', 'Fix Error');
     end
