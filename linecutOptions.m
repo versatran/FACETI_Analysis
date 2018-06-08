@@ -28,6 +28,9 @@ function varargout = linecutOptions(varargin)
             saveConditions();
         case 'load'
             loadConditions();
+        case 'reset'
+            conditions = {};
+            count = 0;
         case 'get'
             UIDs = varargin{2};
             values = varargin{3};

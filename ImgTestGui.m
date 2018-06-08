@@ -699,6 +699,7 @@ function menuCorrelate_Callback(~, ~, ~)
                 % creates plot
                 c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                     y_param ' ' dataset_str]);
+                linecutOptions('reset');
             
                 set(c, 'color', [1,1,1]);
                 plot(sorted_x_values, matched_y_values);
