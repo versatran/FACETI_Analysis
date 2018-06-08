@@ -5,13 +5,10 @@
 
 % Parameters should be entered as followed:
 % (UIDs of values, values to pick from, condition's UIDs)
-% NOTE: condition's UID must be a 3D ARRAY where the size is:
-% {key, 1, pages of UIDs}
-
-% Output the values found with the UID's, and those corresponding UID's
+% NOTE: conditions
+% Output the values found with the UID's
 
 function [newValues, UIDs] = brf_get_Values(varargin)
-    % initializes parameters
     valUID = varargin{1};
     values = varargin{2};
     conUID = varargin{3};
@@ -21,8 +18,6 @@ function [newValues, UIDs] = brf_get_Values(varargin)
     count = 1;
     
     a = msgbox('Finding Values...');
-     % checks to see if there are equal UID's by checking the list of the
-     % corresponding remainder.
     for i = 1:length(values)
         index = mod(valUID(i), key);
         if conUID{index, 1, 1} > 1

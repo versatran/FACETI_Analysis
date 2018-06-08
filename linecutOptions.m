@@ -1,7 +1,11 @@
-% This function determines which gui to open from the task menu
+% This function determines which gui to open from the task menu within
+% correlate
 % The reason this was created was so that the conditions could be passed
 % through multiple options instead of being saved through one gui and
 % having to be consistantly passed through
+
+% the first parameter MUST be the command you would like to execute,
+% otherwise it runs an error!
 
 % Author: Brianna Florio
 function varargout = linecutOptions(varargin)
@@ -10,27 +14,40 @@ function varargout = linecutOptions(varargin)
     global count;
     global conditions;
     switch input
+        % sets condition and count to desired amount
         case 'set'
             if ~isempty(varargin{2}) && ~isempty(varargin{3})
                 setGlobal(varargin{2}, varargin{3});
             end
+        % opens the 'addConditionsGui' and adds a new condition
         case 'add'
             addConditionsGui(varargin{2}, count, conditions);
+        % opens the 'viewConditionsGui' and allows the user to view their
+        % current conditions
         case 'view'
             viewConditionsGui(conditions);
+        % opens the 'deleteConditionGui' and allows the user to choose
+        % which condition to delete
         case 'delete'
             deleteConditionGui(count, conditions);
+        % allows the user to delete all of the conditions at once.
         case 'deleteAll'
             deleteAll();
+        % actually deletes the condition.
         case 'deleteCondition'
             deleteCondition(varargin{2});
+        % allows the user to save their conditions in whichever directory
         case 'save'
             saveConditions();
+        % allows the user to load their conditions in the directory
         case 'load'
             loadConditions();
+        % resets all conditions without the message box
         case 'reset'
             conditions = {};
             count = 0;
+        % gets the UID's and values to be plotted according to the
+        % conditions
         case 'get'
             UIDs = varargin{2};
             values = varargin{3};
@@ -77,6 +94,7 @@ function deleteAll()
     end
 end
     
+% initializes count and condition if they have no value
 function initializeGlobal()
     global count;
     if isempty(count) 
