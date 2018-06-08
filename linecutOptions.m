@@ -28,27 +28,22 @@ function varargout = linecutOptions(varargin)
             saveConditions();
         case 'load'
             loadConditions();
-        case 'get values'
+        case 'get'
             UIDs = varargin{2};
             values = varargin{3};
             param = varargin{4};
             newValues = cell(1, length(conditions));
-            for i = 1:size(conditions)
-                conUIDs = brf_get_UIDs(param, conditions{i});
-                [newValues{1, i}, ~] = brf_get_Values(UIDs, values, conUIDs);    
-            end
-            varargout = newValues;
-        case 'get UIDs'
-            
-            UIDs = varargin{2};
-            values = varargin{3};
-            param = varargin{4};
             newUIDs = cell(1, length(conditions));
-            for i = 1:size(conditions)
+            for i = 1:count
                 conUIDs = brf_get_UIDs(param, conditions{i});
-                [~ , newUIDs{1, i}] = brf_get_Values(UIDs, values, conUIDs);     
+                [newValues{1, i}, newUIDs{1, i}] = brf_get_Values(UIDs, values, conUIDs);
+                if i > 1
+                    [val, uid] = common_UIDs(newValues{1, 1}, newUIDs{1, 1}, newValues{1, i}, newUIDs{1, i});
+                    newValues{1, 1} = val;
+                    newUIDs{1, 1} = uid;
+                end
             end
-            varargout = newUIDs;
+            varargout = [newValues(1, 1), newUIDs(1, 1)];
         otherwise
             msgbox('Code error: Input was not a proper command', 'Fix Error');
     end

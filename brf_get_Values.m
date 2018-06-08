@@ -16,7 +16,7 @@ function [newValues, UIDs] = brf_get_Values(varargin)
     UIDs = {};
     count = 1;
     
-    msgbox('Finding Values...');
+    a = msgbox('Finding Values...');
     for i = 1:length(values)
         index = mod(valUID(i), key);
         if conUID{index, 1, 1} > 1
@@ -30,4 +30,5 @@ function [newValues, UIDs] = brf_get_Values(varargin)
             end
         end
     end
+    delete(a);
 end

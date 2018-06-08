@@ -725,16 +725,13 @@ function menuCorrelate_Callback(~, ~, ~)
     end
         
     function apply_Callback(~,~,~)
-        new_x_values = linecutOptions('get values', x_UID, x_values, converted_parameters);
+        [new_x_values, new_x_UID] = linecutOptions('get', x_UID, x_values, converted_parameters);
         new_x_values = cell2mat(new_x_values);
-        new_x_UID = linecutOptions('get UIDs', x_UID, x_values, converted_parameters);
         new_x_UID = cell2mat(new_x_UID);
-        new_y_values = linecutOptions('get values', y_UID, y_values, converted_parameters);
+        [new_y_values, new_y_UID] = linecutOptions('get', y_UID, y_values, converted_parameters);
         new_y_values = cell2mat(new_y_values);
-        new_y_UID = linecutOptions('get UIDs', x_UID, x_values, converted_parameters);
         new_y_UID = cell2mat(new_y_UID);
-        correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);
-        
+        correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);        
     end
     function openAddConditions(~,~,~)
         linecutOptions('add', converted_parameters);

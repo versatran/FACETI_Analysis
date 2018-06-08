@@ -26,7 +26,7 @@ function newUIDs = brf_get_UIDs(varargin)
     end
     UID_index = 1;
     delete(a);
-    msgbox('Finding UIDs...');
+    b = msgbox('Finding UIDs...');
     
     for i = 1:length(values)
         if values(i) > min && values(i) < max
@@ -36,4 +36,5 @@ function newUIDs = brf_get_UIDs(varargin)
             newUIDs{UID_index, 1, 1} = list_index;
         end
     end
+    delete(b);
 end
