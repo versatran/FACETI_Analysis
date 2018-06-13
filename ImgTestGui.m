@@ -660,11 +660,11 @@ function menuCorrelate_Callback(~, ~, ~)
     % parameter values following the sorted indexes
     c = correlate_plot(x_values, x_UID, y_values, y_UID)
     % creates the "linecut" option in the taskbar
-    linecut_option = uimenu(c, 'Text', 'Linecut');
-    uimenu(linecut_option, 'Text', 'Apply Current Conditions', 'Callback', @apply_Callback);
-    uimenu(linecut_option, 'Text', 'Save Conditions', 'Callback', @openSave);
-    uimenu(linecut_option, 'Text', 'Load Conditions', 'Callback', @openLoad);
-    uimenu(linecut_option, 'Text', 'View Conditions', 'Separator', 'on', 'Callback', @openViewConditions);
+    linecut_option = uimenu(c, 'Label', 'Linecut');
+    uimenu(linecut_option, 'Label', 'Apply Current Conditions', 'Callback', @apply_Callback);
+    uimenu(linecut_option, 'Label', 'Save Conditions', 'Callback', @openSave);
+    uimenu(linecut_option, 'Label', 'Load Conditions', 'Callback', @openLoad);
+    uimenu(linecut_option, 'Label', 'View Conditions', 'Separator', 'on', 'Callback', @openViewConditions);
     uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);       
     item_deleteConditions = uimenu(linecut_option, 'Label', 'Delete');
     uimenu(item_deleteConditions, 'Label', 'Delete All Conditions', ... 
@@ -699,7 +699,7 @@ function menuCorrelate_Callback(~, ~, ~)
                 % creates plot
                 c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
                     y_param ' ' dataset_str]);
-                linecutOptions('reset');
+                % linecutOptions('reset');
             
                 set(c, 'color', [1,1,1]);
                 plot(sorted_x_values, matched_y_values);
@@ -723,8 +723,8 @@ function menuCorrelate_Callback(~, ~, ~)
                 set(plot_title, 'Interpreter', 'none');
                 set(plot_ylabel, 'Interpreter', 'none');
         end
-        saveFigure_option = uimenu(c, 'Text', 'Save');
-        uimenu(saveFigure_option, 'Text', 'Save Conditions', 'Callback', @openViewConditions);
+        saveFigure_option = uimenu(c, 'Label', 'Save');
+        uimenu(saveFigure_option, 'Label', 'Save Conditions', 'Callback', @openViewConditions);
     end
         
     function apply_Callback(~,~,~)
