@@ -28,7 +28,7 @@ function [newValues, UIDs] = brf_get_Values(varargin)
         if conUID{index, 1, 1} > 1
             for k = 2:conUID{index, 1, 1}
                 if conUID{index, 1, k} == valUID(i)
-                    newValues{count} = values(i)
+                    newValues{count} = values(i);
                     UIDs{count} = valUID(i);
                     count = count+1;
                     break;

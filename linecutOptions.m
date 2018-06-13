@@ -15,39 +15,56 @@ function varargout = linecutOptions(varargin)
     global conditions;
     switch input
         % sets condition and count to desired amount
+        % parameteres for 'set' must be:
+        % ('set', desired conditions, desired count)
         case 'set'
             if ~isempty(varargin{2}) && ~isempty(varargin{3})
                 setGlobal(varargin{2}, varargin{3});
             end
         % opens the 'addConditionsGui' and adds a new condition
+        % parameters for 'add' must be:
+        % ('add', converted parameters)
         case 'add'
             addConditionsGui(varargin{2}, count, conditions);
         % opens the 'viewConditionsGui' and allows the user to view their
         % current conditions
+        % 'view' does not call for specific parameters besides the 'view'
+        % command
         case 'view'
             viewConditionsGui(conditions);
         % opens the 'deleteConditionGui' and allows the user to choose
         % which condition to delete
+        % 'delete' parameter does not need specific parameters besides the
+        % 'delete' command
         case 'delete'
             deleteConditionGui(count, conditions);
         % allows the user to delete all of the conditions at once.
+        % only needs the 'deleteAll' command for parameters
         case 'deleteAll'
             deleteAll();
         % actually deletes the condition.
+        % parameters for 'deleteCondition' must be:
+        % ('deleteCondition', index of the condition to be deleted)
         case 'deleteCondition'
             deleteCondition(varargin{2});
         % allows the user to save their conditions in whichever directory
+        % 'save' does not need any parameters except the 'save' command
         case 'save'
             saveConditions();
         % allows the user to load their conditions in the directory
+        % 'load' does not need any parameters except the 'load' command
         case 'load'
             loadConditions();
         % resets all conditions without the message box
+        % 'reset' does not need any parameters except the 'reset' command
         case 'reset'
             conditions = {};
             count = 0;
         % gets the UID's and values to be plotted according to the
         % conditions
+        % parameters for 'get' must be:
+        % ('get', UIDs of TBevaluated values, TBevaluated values, converted
+        % parameters)
         case 'get'
             UIDs = varargin{2};
             values = varargin{3};

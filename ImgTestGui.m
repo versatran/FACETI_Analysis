@@ -723,6 +723,8 @@ function menuCorrelate_Callback(~, ~, ~)
                 set(plot_title, 'Interpreter', 'none');
                 set(plot_ylabel, 'Interpreter', 'none');
         end
+        saveFigure_option = uimenu(c, 'Text', 'Save');
+        uimenu(saveFigure_option, 'Text', 'Save Conditions', 'Callback', @openViewConditions);
     end
         
     function apply_Callback(~,~,~)
@@ -734,6 +736,7 @@ function menuCorrelate_Callback(~, ~, ~)
         new_y_UID = cell2mat(new_y_UID);
         correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);        
     end
+
     function openAddConditions(~,~,~)
         linecutOptions('add', converted_parameters);
     end
