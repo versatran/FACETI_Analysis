@@ -732,6 +732,10 @@ function menuCorrelate_Callback(~, ~, ~)
         [new_y_values, new_y_UID] = linecutOptions('get', y_UID, y_values, converted_parameters);
         new_y_values = cell2mat(new_y_values);
         new_y_UID = cell2mat(new_y_UID);
+        setappdata(0, 'correlated_x', new_x_values);
+        setappdata(0, 'correlated_y', new_y_values);
+        setappdata(0, 'correlated_UIDs', new_x_UID);
+        brf_save_correlated_images;
         correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);        
     end
     function openAddConditions(~,~,~)
