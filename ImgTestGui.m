@@ -670,6 +670,7 @@ function menuCorrelate_Callback(~, ~, ~)
     uimenu(item_deleteConditions, 'Label', 'Delete All Conditions', ... 
         'Callback', @deleteAll_Callback);
     uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
+    uimenu(linecut_option, 'Text', 'View Correlated Images');
     
     function c = correlate_plot(x_val, xuid, y_val, yuid)
         sort_q = questdlg('Would you like your x_parameter sorted?');
