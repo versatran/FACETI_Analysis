@@ -671,7 +671,6 @@ function menuCorrelate_Callback(~, ~, ~)
     uimenu(item_deleteConditions, 'Label', 'Delete All Conditions', ... 
         'Callback', @deleteAll_Callback);
     uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
-    uimenu(linecut_option, 'Text', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
     
     function c = correlate_plot(x_val, xuid, y_val, yuid)
         sort_q = questdlg('Would you like your x_parameter sorted?');
@@ -737,7 +736,8 @@ function menuCorrelate_Callback(~, ~, ~)
         setappdata(0, 'correlated_x', new_x_values);
         setappdata(0, 'correlated_y', new_y_values);
         setappdata(0, 'correlated_UIDs', new_x_UID);
-        correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);        
+        c = correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);    
+        uimenu(c, 'Text', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
     end
     function openAddConditions(~,~,~)
         linecutOptions('add', converted_parameters);

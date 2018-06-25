@@ -1,4 +1,4 @@
-function images = brf_save_correlated_images
+function brf_save_correlated_images(~,~,~)
     % gets variables needed for function
     data_struc = getappdata(0, 'data');
     camera = getappdata(0, 'camera');
@@ -36,6 +36,13 @@ function images = brf_save_correlated_images
     
     for k = 1:length
         index = find(x_val == sorted_val(1, k));
+        [~, index_size] = size(index);
+        if index_size > 1
+            for m = 1:index_size
+                sorted_val(2, k) = corr_UID(
+            end
+            break;
+        end
         sorted_val(2, k) = corr_UID(index); 
     end
     
@@ -64,6 +71,8 @@ function images = brf_save_correlated_images
             i = i+1;
         end
     end
+    newImages.N_IMGS = i-1;
+    newImages.N_UIDS = i-1;
     newImages.dat = newDat;
     newImages.format = newFormat;
     newImages.isfile = newIsfile;
@@ -80,4 +89,8 @@ function images = brf_save_correlated_images
     newImages.Y_ORIENT = newY_ORIENT;
     
     images = newImages;
+    setappdata(0, 'i', 1);
+    setappdata(0, 'j', 1);
+    setappdata(0, 'correlated_images', images);
+    ImgTestGui_ShowImage;
 end

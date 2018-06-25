@@ -34,9 +34,19 @@ function brf_save_correlated_images(~,~,~)
     
     sorted_val = sort(x_val);
     
-    for k = 1:length
+    k = 1;
+    while (k < length)
         index = find(x_val == sorted_val(1, k));
-        sorted_val(2, k) = corr_UID(index); 
+        [~, index_size] = size(index);
+        if index_size > 1
+            for m = 1:index_size
+                sorted_val(2, k) = corr_UID(index(m));
+                k = k+1;
+            end
+        else
+            sorted_val(2, k) = corr_UID(index); 
+            k = k+1;
+        end
     end
     
     newImages = struct('IDType', IDtype, 'N_EXPT', N_EXPT, 'ERRORS', ERRORS, ...
@@ -82,6 +92,8 @@ function brf_save_correlated_images(~,~,~)
     newImages.Y_ORIENT = newY_ORIENT;
     
     images = newImages;
+    setappdata(0, 'i', 1);
+    setappdata(0, 'j', 1);
     setappdata(0, 'correlated_images', images);
     ImgTestGui_ShowImage;
 end
