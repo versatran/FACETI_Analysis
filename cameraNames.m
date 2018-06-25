@@ -59,7 +59,9 @@ function cameraNames_OpeningFcn(hObject, ~, handles, varargin)
     % gets the camera names from data set
     Cams_str = fieldnames(data.raw.images);
     set(handles.listCameraNames, 'String', Cams_str);
-
+    if isappdata(0, 'correlated_images')
+        rmappdata(0, 'correlated_images');
+    end
     % UIWAIT makes cameraNames wait for user response (see UIRESUME)
     % uiwait(handles.figure1);
 

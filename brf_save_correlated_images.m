@@ -1,4 +1,4 @@
-function brf_save_correlated_images
+function brf_save_correlated_images(~,~,~)
     % gets variables needed for function
     data_struc = getappdata(0, 'data');
     camera = getappdata(0, 'camera');
@@ -83,4 +83,5 @@ function brf_save_correlated_images
     
     images = newImages;
     setappdata(0, 'correlated_images', images);
+    ImgTestGui_ShowImage;
 end
