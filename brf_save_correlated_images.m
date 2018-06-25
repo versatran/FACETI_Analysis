@@ -1,3 +1,6 @@
+% brf_save_correlated_images creates a new img structure according to the
+% correlated data from "Correlate" under specific conditions.
+
 function brf_save_correlated_images(~,~,~)
     % gets variables needed for function
     data_struc = getappdata(0, 'data');
@@ -27,13 +30,15 @@ function brf_save_correlated_images(~,~,~)
     X_ORIENT = image_info.X_ORIENT;
     Y_ORIENT = image_info.Y_ORIENT;
     
-    
+    % grabs the x_values and their corresponding UIDs
     x_val = getappdata(0, 'correlated_x');
     corr_UID = getappdata(0, 'correlated_UIDs');
     [~,length] = size(corr_UID);
     
+    % sorts the x_values from minimum to maximum values
     sorted_val = sort(x_val);
     
+    % sorts the UID's to their corresponding x_val
     k = 1;
     while (k < length)
         index = find(x_val == sorted_val(1, k));
@@ -49,9 +54,12 @@ function brf_save_correlated_images(~,~,~)
         end
     end
     
+    % initializes a new image structure
     newImages = struct('IDType', IDtype, 'N_EXPT', N_EXPT, 'ERRORS', ERRORS, ...
         'N_IMGS', N_IMGS, 'N_UIDS', N_UIDS, 'N_NOUID', N_NOUID);
     
+    % adds data information from the previous data in order according to
+    % x_val
     i = 1;
     for j = 1:length
         index = find(UID == sorted_val(2, j));
@@ -74,6 +82,7 @@ function brf_save_correlated_images(~,~,~)
             i = i+1;
         end
     end
+    % sets the fields for x_vals
     newImages.N_IMGS = i-1;
     newImages.N_UIDS = i-1;
     newImages.dat = newDat;
@@ -91,6 +100,7 @@ function brf_save_correlated_images(~,~,~)
     newImages.X_ORIENT = newX_ORIENT;
     newImages.Y_ORIENT = newY_ORIENT;
     
+    % sets images now to be correlated images.
     images = newImages;
     setappdata(0, 'i', 1);
     setappdata(0, 'j', 1);
