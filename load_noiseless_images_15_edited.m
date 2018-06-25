@@ -9,9 +9,14 @@
 background_checked = getappdata(0, 'background_checked');
 skip_background_verification = getappdata(0, 'skip_background_verification');
 prefix = getappdata(0, 'prefix');
-num_stacks = getappdata(0, 'num_stacks');
-image_struc = getappdata(0, 'image_struc');
-num_images = getappdata(0, 'num_images');
+if isappdata(0, 'correlated_images');
+    image_struc = getappdata(0, 'correlated_images');
+    num_images = image_struc.N_IMGS;
+else
+    num_stacks = getappdata(0, 'num_stacks');
+    image_struc = getappdata(0, 'image_struc');
+    num_images = getappdata(0, 'num_images');
+end
 stack_text = getappdata(0, 'stack_text');
 func_name = getappdata(0, 'func_name');
 bend_struc = getappdata(0, 'bend_struc');

@@ -617,6 +617,7 @@ function menuPlotEnergyWithSortedValue_Callback(~, ~, ~)
     plot_energy_with_sorted_value;
 end
 
+
 % This function allows you to create a correlation plot of any two
 % parameters in dataset. You can sort by the x parameter chosen
 function menuCorrelate_Callback(~, ~, ~)
@@ -726,7 +727,7 @@ function menuCorrelate_Callback(~, ~, ~)
         saveFigure_option = uimenu(c, 'Label', 'Save');
         uimenu(saveFigure_option, 'Label', 'Save Conditions', 'Callback', @openViewConditions);
     end
-        
+
     function apply_Callback(~,~,~)
         [new_x_values, new_x_UID] = linecutOptions('get', x_UID, x_values, converted_parameters);
         new_x_values = cell2mat(new_x_values);
@@ -734,7 +735,11 @@ function menuCorrelate_Callback(~, ~, ~)
         [new_y_values, new_y_UID] = linecutOptions('get', y_UID, y_values, converted_parameters);
         new_y_values = cell2mat(new_y_values);
         new_y_UID = cell2mat(new_y_UID);
-        correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);        
+        setappdata(0, 'correlated_x', new_x_values);
+        setappdata(0, 'correlated_y', new_y_values);
+        setappdata(0, 'correlated_UIDs', new_x_UID);
+        c = correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);    
+        uimenu(c, 'Text', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
     end
 
     function openAddConditions(~,~,~)

@@ -139,6 +139,7 @@ if show_image % fix for odd(1) or even(0)
         set(gca, 'YTickLabel', energy_ticks);
     end
     
+    %TODO: ERROR -- Does not display the ylabel.
     colormap(sebas_colors)
     ylabel(camera.y_label_text, 'fontsize', 15); 
     xlabel('Pixels', 'fontsize', 15);
