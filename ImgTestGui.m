@@ -652,7 +652,8 @@ function menuCorrelate_Callback(~, ~, ~)
     [a, ~] = listdlg('PromptString', 'Select y-axis parameter', ...
         'SelectionMode', 'single', 'ListString', converted_parameters);
     y_param = converted_parameters{a};
-
+    
+    setappdata(0, 'converted_parameters', converted_parameters);
     % get x and y values
     [x_UID, x_values] = eda_extract_data(data, x_param, s);
     [y_UID, y_values] = eda_extract_data(data, y_param, a);

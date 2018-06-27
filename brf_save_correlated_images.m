@@ -61,9 +61,12 @@ function brf_save_correlated_images(~,~,~)
     % adds data information from the previous data in order according to
     % x_val
     i = 1;
-    for j = 1:length
+    j = 1;
+    
+    % weird error here that gets rid of one image and I don't know why?
+    while (j <= length)
         [~, index_size] = size(find(UID == sorted_val(2, j)))
-        if index_size == 1 || index_size == 0
+        if index_size <= 1
             index = find(UID == sorted_val(2, j));
             if UID(index) == 0
                 error('ERROR: UID is equal to zero, incomplete dataset');
@@ -83,16 +86,21 @@ function brf_save_correlated_images(~,~,~)
                     newRESOLUTION(i) = RESOLUTION(index);
                     newX_ORIENT(i) = X_ORIENT(index);
                     newY_ORIENT(i) = Y_ORIENT(index);
+                    ORG_IDX(i) = index;
                     i = i+1;
                 end
-            end
-        else
-            error('ERROR: MULTIPLE UIDS for different values. check code');
+             end
         end
+        j = j+1;
     end
     % sets the fields for x_vals
-    newImages.N_IMGS = i-1;
-    newImages.N_UIDS = i-1;
+    correlated_struc.condition = getappdata(0, 'x_param');
+    correlated_struc.ORG_TOT = N_IMGS;
+    correlated_struc.ORG_IDX = ORG_IDX;
+    correlated_struc.X_VALS = sorted_val;
+    newImages.correlated_struc = correlated_struc;
+    newImages.N_IMGS = i;
+    newImages.N_UIDS = i;
     newImages.dat = newDat;
     newImages.format = newFormat;
     newImages.isfile = newIsfile;
