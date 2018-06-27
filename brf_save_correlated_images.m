@@ -62,24 +62,32 @@ function brf_save_correlated_images(~,~,~)
     % x_val
     i = 1;
     for j = 1:length
-        index = find(UID == sorted_val(2, j));
-        
-        if ~isempty(index)
-            newDat{i} = dat{index}
-            newFormat(i) = format(index);
-            newIsfile(i) = isfile(index);
-            newPID(i) = PID(index);
-            newUID(i) = UID(index);
-            newBackground_dat{i} = background_dat{index};
-            newBackground_format(i) = background_format(index);
-            newROI_X(i) = ROI_X(index);
-            newROI_Y(i) = ROI_Y(index);
-            newROI_XNP(i) = ROI_XNP(index);
-            newROI_YNP(i) = ROI_YNP(index);
-            newRESOLUTION(i) = RESOLUTION(index);
-            newX_ORIENT(i) = X_ORIENT(index);
-            newY_ORIENT(i) = Y_ORIENT(index);
-            i = i+1;
+        [~, index_size] = size(find(UID == sorted_val(2, j)))
+        if index_size == 1 || index_size == 0
+            index = find(UID == sorted_val(2, j));
+            if UID(index) == 0
+                error('ERROR: UID is equal to zero, incomplete dataset');
+            else
+                if ~isempty(index)
+                    newDat{i} = dat{index}
+                    newFormat(i) = format(index);
+                    newIsfile(i) = isfile(index);
+                    newPID(i) = PID(index);
+                    newUID(i) = UID(index);
+                    newBackground_dat{i} = background_dat{index};
+                    newBackground_format(i) = background_format(index);
+                    newROI_X(i) = ROI_X(index);
+                    newROI_Y(i) = ROI_Y(index);
+                    newROI_XNP(i) = ROI_XNP(index);
+                    newROI_YNP(i) = ROI_YNP(index);
+                    newRESOLUTION(i) = RESOLUTION(index);
+                    newX_ORIENT(i) = X_ORIENT(index);
+                    newY_ORIENT(i) = Y_ORIENT(index);
+                    i = i+1;
+                end
+            end
+        else
+            error('ERROR: MULTIPLE UIDS for different values. check code');
         end
     end
     % sets the fields for x_vals

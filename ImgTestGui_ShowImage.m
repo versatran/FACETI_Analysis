@@ -188,6 +188,13 @@ if show_image % fix for odd(1) or even(0)
         text(.02 * display_width + 1, .1 * display_height + 1, ...
             stack_text{i}, 'color', 'w', 'backgroundcolor', 'blue');
     end
+    if (isappdata(0, 'correlated_UIDs'))
+        corr_x = getappdata(0, 'correlated_x');
+        val = corr_x(j);
+        text(.75 * display_width + 1, .03 *display_height + 1, ...
+           [getappdata(0, 'x_param') ': ' num2str(val)], 'color', 'w', ...
+           'backgroundcolor', 'blue');
+    end
 end
         
 % linearizes by allowing user to select region of interest

@@ -725,6 +725,7 @@ function menuCorrelate_Callback(~, ~, ~)
                 set(plot_ylabel, 'Interpreter', 'none');
         end
         saveFigure_option = uimenu(c, 'Label', 'Save');
+        setappdata(0, 'x_param', x_param);
         uimenu(saveFigure_option, 'Label', 'Save Conditions', 'Callback', @openViewConditions);
     end
 
