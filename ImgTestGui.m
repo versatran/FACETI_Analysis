@@ -380,7 +380,12 @@ function pushNextShot_Callback(~, ~, handles)
     % get necessary variables
     camera = getappdata(0, 'camera');
     num_stacks = getappdata(0, 'num_stacks');
-    num_images = getappdata(0, 'num_images');
+    if isappdata(0, 'correlated_UIDs')
+       image_struc = getappdata(0, 'correlated_images');
+       num_images = image_struc.N_IMGS;
+    else
+        num_images = getappdata(0, 'num_images');
+    end
     stack_text = getappdata(0, 'stack_text');
     bend_struc = getappdata(0, 'bend_struc');
     i = getappdata(0, 'i');

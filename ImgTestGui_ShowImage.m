@@ -180,8 +180,8 @@ if show_image % fix for odd(1) or even(0)
     
     % display shot number text
     if (isappdata(0, 'correlated_UIDs'))
-        corr_x = getappdata(0, 'correlated_x');
-        val = corr_x(j);
+       x_vals = image_struc.correlated_struc.SORT_X_VALS;
+        val = x_vals(j);
         text(.75 * display_width + 1, .03 *display_height + 1, ...
            [getappdata(0, 'x_param') ': ' num2str(val)], 'color', 'w', ...
            'backgroundcolor', 'blue');
