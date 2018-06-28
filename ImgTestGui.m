@@ -746,7 +746,7 @@ function menuCorrelate_Callback(~, ~, ~)
         setappdata(0, 'correlated_y', new_y_values);
         setappdata(0, 'correlated_UIDs', new_x_UID);
         c = correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);    
-        uimenu(c, 'Text', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
+        uimenu(c, 'Label', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
     end
 
     function openAddConditions(~,~,~)
