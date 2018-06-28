@@ -47,7 +47,7 @@ function newUIDs = brf_get_UIDs(varargin)
         % condition
         if values(i) > min && values(i) < max
             % hashes and places in possition according to the remainder
-            UID_index = mod(UIDs(i), key);
+            UID_index = mod(UIDs(i), key) + 1;
             list_index = newUIDs{UID_index, 1, 1} + 1;
             newUIDs{UID_index, 1, list_index} = UIDs(i);
             newUIDs{UID_index, 1, 1} = list_index;

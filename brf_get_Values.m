@@ -24,7 +24,7 @@ function [newValues, UIDs] = brf_get_Values(varargin)
      % checks to see if there are equal UID's by checking the list of the
      % corresponding remainder.
     for i = 1:length(values)
-        index = mod(valUID(i), key);
+        index = mod(valUID(i), key) + 1;
         if conUID{index, 1, 1} > 1
             for k = 2:conUID{index, 1, 1}
                 if conUID{index, 1, k} == valUID(i)
