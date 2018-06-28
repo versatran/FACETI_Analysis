@@ -40,7 +40,7 @@ function brf_save_correlated_images(~,~,~)
     
     % sorts the UID's to their corresponding x_val
     k = 1;
-    while (k < length)
+    while (k <= length)
         index = find(x_val == sorted_val(1, k));
         [~, index_size] = size(index);
         if index_size > 1
@@ -100,8 +100,8 @@ function brf_save_correlated_images(~,~,~)
     correlated_struc.SORT_X_VALS = sorted_val(1, :);
     correlated_struc.SORT_UIDS = sorted_val(2, :);
     newImages.correlated_struc = correlated_struc;
-    newImages.N_IMGS = i-1;
-    newImages.N_UIDS = i-1;
+    newImages.N_IMGS = i;
+    newImages.N_UIDS = i;
     newImages.dat = newDat;
     newImages.format = newFormat;
     newImages.isfile = newIsfile;
