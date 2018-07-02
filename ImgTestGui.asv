@@ -770,6 +770,7 @@ function menuCorrelate_Callback(~, ~, ~)
 end
 
 function menuCreateCondition_Callback(~, ~, ~)
+ dataset_str = getappdata(0, 'dataset_str');
     data = getappdata(0, 'data');
 
     % get parameter names for data set
@@ -793,8 +794,6 @@ function menuCreateCondition_Callback(~, ~, ~)
     converted_parameters{num_parameters + 3, 1} = ...
         'excess_charge_UStoro1_DStoro1';
     setappdata(0, 'converted_param', converted_parameters);
-    setappdata(0, 'param', scalars);
-    createConditionsGui;
 end
 
 
@@ -1039,12 +1038,4 @@ end
 
 % --- Executes during object deletion, before destroying properties.
 function serverPopUpMenu_DeleteFcn(~, ~, ~)
-end
-
-
-% --------------------------------------------------------------------
-function menuCreateNewVar_Callback(hObject, eventdata, handles)
-% hObject    handle to menuCreateCondition (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 end
