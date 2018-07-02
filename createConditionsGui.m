@@ -22,7 +22,7 @@ function varargout = createConditionsGui(varargin)
 
 % Edit the above text to modify the response to help createConditionsGui
 
-% Last Modified by GUIDE v2.5 02-Jul-2018 11:53:18
+% Last Modified by GUIDE v2.5 02-Jul-2018 14:22:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,7 +51,7 @@ function createConditionsGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to createConditionsGui (see VARARGIN)
-set(handles.impVar_popUpMenu, 'Visible', 'off');
+set(handles.impVarName_edit, 'Visible', 'off');
 set(handles.impMachineName_edit, 'Visible', 'off');
 set(handles.import_pushButton, 'Visible', 'off');
 converted_param = getappdata(0, 'converted_param');
@@ -115,8 +115,11 @@ data = getappdata(0, 'data');
 label = {strcat('Export ', name, ' values as: ')};
 var = {'export_data'};
 [vals, ~] = eda_extract_data(data, name, index);
-vals = {vals}
-vals = export2wsdlg(label, var, vals);
+vals = {vals};
+export2wsdlg(label, var, vals);
+set(handles.impMachineName_edit, 'Visible', 'on');
+set(handles.import_pushButton, 'Visible', 'on');
+set(handles.impVarName_edit, 'Visible', 'on');
 
 
 % --- Executes on selection change in impVar_popUpMenu.
@@ -170,7 +173,10 @@ function import_pushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to import_pushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+name = get(handles.impVarName_edit, 'String');
+machine = get(handles.impMachineName_edit, 'String');
+a = evalin('base', name);
+a = a;
 
 % --- Executes on button press in save_pushButton.
 function save_pushButton_Callback(hObject, eventdata, handles)
@@ -184,3 +190,34 @@ function close_pushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to close_pushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in refresh_pushButton.
+function refresh_pushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to refresh_pushButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+setImpVar_popUpMenu(hObject, eventdata, handles);
+
+
+
+function impVarName_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to impVarName_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of impVarName_edit as text
+%        str2double(get(hObject,'String')) returns contents of impVarName_edit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function impVarName_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to impVarName_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

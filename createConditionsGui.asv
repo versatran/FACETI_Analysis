@@ -110,8 +110,24 @@ function export_pushButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 converted_param = get(handles.expVar_popUpMenu, 'String');
 index = get(handles.expVar_popUpMenu, 'Value');
-name = converted_param(index);
+name = string(converted_param(index));
+data = getappdata(0, 'data');
+label = {strcat('Export ', name, ' values as: ')};
+var = {'export_data'};
+[vals, ~] = eda_extract_data(data, name, index);
+vals = {vals}
+export2wsdlg(label, var, vals);
+set(handles.impVar_popUpMenu, 'Visible', 'on');
+setImpVar_popUpMenu(handles);
+set(handles.impMachineName_edit, 'Visible', 'on');
+set(handles.import_pushButton, 'Visible', 'on');
 
+function setImpVar_popUpMenu(handles)
+value = whos;
+for i = 1:numel(A)
+    value(i).name
+end
+set(handles.impVar_popUpMenu
 
 % --- Executes on selection change in impVar_popUpMenu.
 function impVar_popUpMenu_Callback(hObject, eventdata, handles)
