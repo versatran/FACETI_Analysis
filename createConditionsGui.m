@@ -190,15 +190,11 @@ function close_pushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to close_pushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in refresh_pushButton.
-function refresh_pushButton_Callback(hObject, eventdata, handles)
-% hObject    handle to refresh_pushButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-setImpVar_popUpMenu(hObject, eventdata, handles);
-
+ans = questdlg('Are you sure you want to leave?', 'Close', 'Yes', 'No', 'Yes');
+switch ans
+    case 'Yes'
+        close;
+end
 
 
 function impVarName_edit_Callback(hObject, eventdata, handles)
