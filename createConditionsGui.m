@@ -175,15 +175,59 @@ function import_pushButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 name = get(handles.impVarName_edit, 'String');
 machine = get(handles.impMachineName_edit, 'String');
+global a;
 a = evalin('base', name);
-a = a;
+
 
 % --- Executes on button press in save_pushButton.
 function save_pushButton_Callback(hObject, eventdata, handles)
 % hObject    handle to save_pushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+data = getappdata(0, 'data');
+machine = get(handles.impMachineName_edit, 'String');
+machine = string(machine);
+global a
+if ~isempty(a)
+    data.user.(machine) = a;
+    source_dir = getappdata(0, 'source_dir');
+    server_str = getappdata(0, 'server_str');
+    expt_str = getappdata(0, 'expt_str');
+    year_str = getappdata(0, 'year_str');
+    date_str = getappdata(0, 'date_str');
+    dataset_str = getappdata(0, 'dataset_str');
+    
+    folder_name = strcat(expt_str, '_', dataset_str, '_files');
+    
+    folder_path = strcat(source_dir, server_str, expt_str, filesep, ...
+        year_str, filesep, date_str, filesep, expt_str, '_', dataset_str, ...
+        filesep, folder_name, filesep);
+    
+    mkdir folder_path 'user';
+    folder_path = strcat(folder_path, filesep, 'user');
+    [~, msg] = mkdir(folder_path, machine);
+    switch msg
+        case isempty(msg)
+            filename = strcat(folder_path, filesep, machine, filesep, ...
+                machine, '.mat');
+            save(filename, 'a');
+            setappdata(0, 'data', data);
+        case 'Directory already exists.'
+            question = strcat('There is an existing machine named ', ...
+                machine, '. Do you want to overwrite the data?');
+            choice = questdlg(question, 'File exists', 'Yes', 'No', 'No');
+            if strcmp('Yes', choice)
+            filename = strcat(folder_path, filesep, machine, filesep, ...
+                machine, '.mat');
+            save(filename, 'a');
+            setappdata(0, 'data', data);
+            end
+        otherwise
+            msgdlg('Something went wrong. Please try again');
+    end
+else
+    
+end
 
 % --- Executes on button press in close_pushButton.
 function close_pushButton_Callback(hObject, eventdata, handles)
