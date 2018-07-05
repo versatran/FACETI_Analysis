@@ -114,14 +114,15 @@ name = string(converted_param(index));
 data = getappdata(0, 'data');
 labels = {strcat('Export ', name, ' values as: ') ...
     strcat('Export ', name, ' UIDs as: ')};
-var = {'export_data'};
+var = {'export_data', 'export_UIDs'};
 [vals, UIDs] = eda_extract_data(data, name, index);
-vals = {vals};
-export2wsdlg(label, var, vals);
+vals = {vals, UIDs};
+export2wsdlg(labels, var, vals);
 set(handles.impMachineName_edit, 'Visible', 'on');
 set(handles.import_pushButton, 'Visible', 'on');
 set(handles.impVarName_edit, 'Visible', 'on');
-
+global UID
+UID = UIDs;
 
 % --- Executes on selection change in impVar_popUpMenu.
 function impVar_popUpMenu_Callback(hObject, eventdata, handles)
@@ -218,10 +219,10 @@ if ~isempty(a)
                 machine, '. Do you want to overwrite the data?');
             choice = questdlg(question, 'File exists', 'Yes', 'No', 'No');
             if strcmp('Yes', choice)
-            filename = strcat(folder_path, filesep, machine, filesep, ...
-                machine, '.mat');
-            save(filename, 'a');
-            setappdata(0, 'data', data);
+                filename = strcat(folder_path, filesep, machine, filesep, ...
+                    machine, '.mat');
+                save(filename, 'a');
+                setappdata(0, 'data', data);
             end
         otherwise
             msgdlg('Something went wrong. Please try again');

@@ -115,13 +115,14 @@ data = getappdata(0, 'data');
 labels = {strcat('Export ', name, ' values as: ') ...
     strcat('Export ', name, ' UIDs as: ')};
 var = {'export_data', 'export_UIDs'};
-[vals, UIDs] = eda_extract_data(data, name, index);
+[UIDs, vals] = eda_extract_data(data, name, index);
 vals = {vals, UIDs};
 export2wsdlg(labels, var, vals);
 set(handles.impMachineName_edit, 'Visible', 'on');
 set(handles.import_pushButton, 'Visible', 'on');
 set(handles.impVarName_edit, 'Visible', 'on');
-
+global UID
+UID = UIDs;
 
 % --- Executes on selection change in impVar_popUpMenu.
 function impVar_popUpMenu_Callback(hObject, eventdata, handles)
@@ -189,8 +190,11 @@ data = getappdata(0, 'data');
 machine = get(handles.impMachineName_edit, 'String');
 machine = string(machine);
 global a
+global UID
+
 if ~isempty(a)
-    data.user.(machine) = a;
+    dat = struct('Values', a, 'UIDs', UID);
+    data.user.(machine) = dat;
     source_dir = getappdata(0, 'source_dir');
     server_str = getappdata(0, 'server_str');
     expt_str = getappdata(0, 'expt_str');
@@ -203,7 +207,7 @@ if ~isempty(a)
     folder_path = strcat(source_dir, server_str, expt_str, filesep, ...
         year_str, filesep, date_str, filesep, expt_str, '_', dataset_str, ...
         filesep, folder_name, filesep);
-    
+
     mkdir folder_path 'user';
     folder_path = strcat(folder_path, filesep, 'user');
     [~, msg] = mkdir(folder_path, machine);
@@ -211,20 +215,20 @@ if ~isempty(a)
         case isempty(msg)
             filename = strcat(folder_path, filesep, machine, filesep, ...
                 machine, '.mat');
-            save(filename, 'a');
+            save(filename, 'dat');
             setappdata(0, 'data', data);
         case 'Directory already exists.'
             question = strcat('There is an existing machine named ', ...
                 machine, '. Do you want to overwrite the data?');
             choice = questdlg(question, 'File exists', 'Yes', 'No', 'No');
             if strcmp('Yes', choice)
-            filename = strcat(folder_path, filesep, machine, filesep, ...
-                machine, '.mat');
-            save(filename, 'a');
-            setappdata(0, 'data', data);
+                filename = strcat(folder_path, filesep, machine, filesep, ...
+                    machine, '.mat');
+                save(filename, 'dat');
+                setappdata(0, 'data', data);
             end
         otherwise
-            msgdlg('Something went wrong. Please try again');
+            msgbox('Something went wrong. Please try again');
     end
 else
     

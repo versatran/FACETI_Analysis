@@ -661,6 +661,7 @@ function menuCorrelate_Callback(~, ~, ~)
     % prompt user to select x and y parameters
     [s, ~] = listdlg('PromptString', 'Select x-axis parameter', ...
         'SelectionMode', 'single', 'ListString', converted_parameters);
+    if s > 
     x_param = converted_parameters{s};
     [a, ~] = listdlg('PromptString', 'Select y-axis parameter', ...
         'SelectionMode', 'single', 'ListString', converted_parameters);
