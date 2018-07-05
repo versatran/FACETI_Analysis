@@ -112,11 +112,12 @@ converted_param = get(handles.expVar_popUpMenu, 'String');
 index = get(handles.expVar_popUpMenu, 'Value');
 name = string(converted_param(index));
 data = getappdata(0, 'data');
-label = {strcat('Export ', name, ' values as: ')};
-var = {'export_data'};
-[vals, ~] = eda_extract_data(data, name, index);
-vals = {vals};
-export2wsdlg(label, var, vals);
+labels = {strcat('Export ', name, ' values as: ') ...
+    strcat('Export ', name, ' UIDs as: ')};
+var = {'export_data', 'export_UIDs'};
+[vals, UIDs] = eda_extract_data(data, name, index);
+vals = {vals, UIDs};
+export2wsdlg(labels, var, vals);
 set(handles.impMachineName_edit, 'Visible', 'on');
 set(handles.import_pushButton, 'Visible', 'on');
 set(handles.impVarName_edit, 'Visible', 'on');

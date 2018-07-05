@@ -112,9 +112,10 @@ converted_param = get(handles.expVar_popUpMenu, 'String');
 index = get(handles.expVar_popUpMenu, 'Value');
 name = string(converted_param(index));
 data = getappdata(0, 'data');
-label = {strcat('Export ', name, ' values as: ')};
+labels = {strcat('Export ', name, ' values as: ') ...
+    strcat('Export ', name, ' UIDs as: ')};
 var = {'export_data'};
-[vals, ~] = eda_extract_data(data, name, index);
+[vals, UIDs] = eda_extract_data(data, name, index);
 vals = {vals};
 export2wsdlg(label, var, vals);
 set(handles.impMachineName_edit, 'Visible', 'on');
@@ -205,14 +206,14 @@ if ~isempty(a)
     
     mkdir folder_path 'user';
     folder_path = strcat(folder_path, filesep, 'user');
-    mkdir folder_path machine
-    switch status
-        case 1
+    [~, msg] = mkdir(folder_path, machine);
+    switch msg
+        case isempty(msg)
             filename = strcat(folder_path, filesep, machine, filesep, ...
                 machine, '.mat');
             save(filename, 'a');
             setappdata(0, 'data', data);
-        otherwise
+        case 'Directory already exists.'
             question = strcat('There is an existing machine named ', ...
                 machine, '. Do you want to overwrite the data?');
             choice = questdlg(question, 'File exists', 'Yes', 'No', 'No');
@@ -222,6 +223,8 @@ if ~isempty(a)
             save(filename, 'a');
             setappdata(0, 'data', data);
             end
+        otherwise
+            msgdlg('Something went wrong. Please try again');
     end
 else
     
