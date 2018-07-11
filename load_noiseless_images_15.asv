@@ -183,12 +183,8 @@ switch camera.noise_region
         sample_vector=[1,camera.sample_vert_width,...
             1,camera.sample_horiz_width];
     case 'bottom'
-        if ~exist('original_vertsize')
-            original_vertsize = getappdata(0, 'original_vertsize');
-        end
-        if ~exist('original_horizsize')
-            original_horizsize = getappdata(0, 'original_horizsize');
-        end
+        original_vertsize = getappdata(0, 'original_vertsize')
+        original_horizsize = getappdata(0, '
         sample_vector=[original_vertsize-camera.sample_vert_width,...
             original_vertsize,original_horizsize-...
             camera.sample_horiz_width,original_horizsize];
@@ -204,9 +200,6 @@ if ~exist('noise')
 end
 if ~exist('scale_adjustment')
     scale_adjustment = getappdata(0, 'scale_adjustment');
-end
-if ~exist(sample_vector)
-    sample_vector = getappdata(0, 'sample_vector');
 end
 image_sample=sum(sum(original_image(sample_vector(1):sample_vector(2),...
     sample_vector(3):sample_vector(4))));

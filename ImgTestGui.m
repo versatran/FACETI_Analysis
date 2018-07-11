@@ -1056,3 +1056,34 @@ function menuCreateNewVar_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 end
+
+
+% --------------------------------------------------------------------
+function menu_imageProcessing_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_imageProcessing (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
+
+% --------------------------------------------------------------------
+function menu_multibox_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_multibox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
+
+% --------------------------------------------------------------------
+function menu_continualCrop_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_continualCrop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+image_processing_GUI(2, 'continual');
+end
+
+% --------------------------------------------------------------------
+function menu_staticCrop_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_staticCrop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+image_processing_GUI(2, 'static');
+end
