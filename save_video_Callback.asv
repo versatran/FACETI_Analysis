@@ -1,9 +1,13 @@
-function save_video_Callback(~, ~, ~)
+function  [videofilename, vidObj2, vidObj] = save_video_Callback(~, ~, ~)
     Emovie = getappdata(0, 'Emovie');
+    num_stacks = getappdata(0, 'num_stacks');
+    data_name = getappdata(0, 'dataset_str');
     [file, path] = uiputfile('.MP4', 'Save Video', 'UntitledVideo.MP4');
-    videofilename = strcat(path, file);
+    videofilename = strcat(path, f
     vidObj2=VideoWriter(videofilename,'MPEG-4');
 
+    
+    
         %prone Emovie
         counter=0;
         for k=1:length(Emovie)

@@ -270,6 +270,7 @@ function image_processing_GUI(varargin)
                                     rectangle('position',rectangles(i,j,k,:),'edgecolor','k','linewidth',1.5,'linestyle','--')
                                 end
                             end
+                            setappdata(0, 'counts', counts);
                         end
                         else
                             counts=0; 
@@ -367,10 +368,12 @@ function image_processing_GUI(varargin)
         uimenu(export_opt, 'Text', 'Export Counts', 'Callback', @export_counts);
     end
     uimenu(main_canvas, 'Text', 'Save as Movie', 'Callback', @save_video_Callback);
-    function export_counts(~,~,~)
-       labels = {'Export counts as: '};
-       var = {'counts'};
-       vals = {counts};
-       export2wsdlg(labels, var, vals);
-    end
+end
+
+function export_counts(~,~,~)
+   labels = {'Export counts as: '};
+   counts = getappdata(0, 'counts');
+   var = {'counts'};
+   vals = {counts};
+   export2wsdlg(labels, var, vals);
 end
