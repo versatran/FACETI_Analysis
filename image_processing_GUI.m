@@ -240,13 +240,11 @@ function image_processing_GUI(varargin)
                     elseif (rect_option<0)
                         for k=1:-rect_option
                             if isContinual
-                                rect_pos = getappdata(0, 'rect_pos');
-                                image = getimage(main_canvas.CurrentAxes);
-                                I = imcrop(image, rect_pos{k});
-                                rectangles(i,j,k,1:4)=rect;
-    %                             cropped(i,j,k)={I};
+                                image = getimage(main_canvas.CurrentAxes); 
+                                [I,rect]=imcrop;
+                                rect_pos(k) = {rect};
                                 counts(i,j,k)=sum(sum(I));
-                                rect = rect_pos{k};
+                                rectangles(i,j,k,1:4)=rect;
                                 if (3)>0 && rect(4)>0
                                     rectangle('position',rectangles(i,j,k,:),'edgecolor','k','linewidth',1.5,'linestyle','--')
                                 end
