@@ -218,7 +218,7 @@ if ~isempty(a)
                 machine, '.mat');
             save(filename, 'dat');
             setappdata(0, 'data', data);
-            msg = 'Saved Successfully';
+            msg = 'Saved Succesfully';
     end
     switch msg
         case 'Directory already exists.'
@@ -232,9 +232,8 @@ if ~isempty(a)
                 setappdata(0, 'data', data);
             end
         case 'Saved Successfully'
-            msgbox('Saved Successfully');
         otherwise
-            msgbox('ERROR: Something went wrong. Please try again');
+            ms
     end
 else
     

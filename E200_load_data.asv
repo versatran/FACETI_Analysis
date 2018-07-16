@@ -165,10 +165,7 @@ function data = E200_load_data(pathstr, varargin)
     for i = 1:numItems
        folderName = items(i, :);
        if isempty(strfind(folderName, '.'))
-          start = strfind(folderName, ' ');
-          if ~isempty(start)
-            folderName = folderName(1:start-1);
-          end
+          [begining, end] 
           item_path = strcat(folder_string, folderName, filesep, ...
               folderName, '.mat');
           data.user.(folderName) = load(item_path);
