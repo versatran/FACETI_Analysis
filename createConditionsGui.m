@@ -177,8 +177,8 @@ function import_pushButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 name = get(handles.impVarName_edit, 'String');
 machine = get(handles.impMachineName_edit, 'String');
-global a;
-a = evalin('base', name);
+global VALs;
+VALs = evalin('base', name);
 msgbox('Successfully imported data');
 
 
@@ -190,11 +190,11 @@ function save_pushButton_Callback(hObject, eventdata, handles)
 data = getappdata(0, 'data');
 machine = get(handles.impMachineName_edit, 'String');
 machine = string(machine);
-global a
+global VALs
 global UID
 
-if ~isempty(a)
-    dat = struct('Values', a, 'UIDs', UID);
+if ~isempty(VALs)
+    dat = struct('VALs', VALs, 'UIDs', UID);
     data.user.(machine) = dat;
     source_dir = getappdata(0, 'source_dir');
     server_str = getappdata(0, 'server_str');
@@ -209,7 +209,7 @@ if ~isempty(a)
         year_str, filesep, date_str, filesep, expt_str, '_', dataset_str, ...
         filesep, folder_name, filesep);
 
-    status = mkdir('folder_path', 'user');
+    [status, msg] = mkdir('folder_path', 'user');
     folder_path = strcat(folder_path, filesep, 'user');
     [~, msg] = mkdir(folder_path, machine);
     [sze, ~] = size(msg);
