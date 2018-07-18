@@ -17,7 +17,13 @@ function image_processing_GUI(varargin)
     switch processtype
         case 1 %lineouts
             % allow user to input the box region
-            % box_region =
+            prompt = {'Enter box region 1: ', 'Enter box region 2: '};
+            title = 'Lineout';
+            dims = [1 35];
+            definput = {'300', '500'};
+            box_region = inputdlg(prompt, title, dims, definput);
+            box_region = str2double(box_region{1}):str2double(box_region{2});
+             
         case 2 %multibox
             % allow user to input the amount of boxes vvv
             prompt = {'Enter amount of boxes: '};
@@ -40,10 +46,16 @@ function image_processing_GUI(varargin)
             end
         case 3 %slicefitting
             % allow user to input # of lines and box width
-            % number_of_lines =
-            % box_width = 
+            prompt = {'Enter number of lines: ', 'Enter box width: '};
+            title = 'Slice Fitting';
+            dims = [1 35];
+            definput = {'10', '5'};
+            items = inputdlg(prompt, title, dims, ...
+                definput);
+            number_of_lines = str2double(items{1});
+            box_width = str2double(items{2}); 
         otherwise %error
-            
+            error('process type is unknown');
     end
     
     

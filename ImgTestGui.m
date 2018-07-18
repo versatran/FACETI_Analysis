@@ -1087,3 +1087,21 @@ function menu_staticCrop_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 image_processing_GUI(2, 'static');
 end
+
+
+% --------------------------------------------------------------------
+function menu_lineouts_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_lineouts (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+image_processing_GUI(1);
+end
+
+
+% --------------------------------------------------------------------
+function menu_sliceFitting_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_sliceFitting (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+image_processing_GUI(3);
+end

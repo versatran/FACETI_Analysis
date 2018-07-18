@@ -205,7 +205,7 @@ end
 if ~exist('scale_adjustment')
     scale_adjustment = getappdata(0, 'scale_adjustment');
 end
-if ~exist(sample_vector)
+if ~exist('sample_vector') || isempty(sample_vector)
     sample_vector = getappdata(0, 'sample_vector');
 end
 image_sample=sum(sum(original_image(sample_vector(1):sample_vector(2),...
