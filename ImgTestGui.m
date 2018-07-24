@@ -1105,3 +1105,12 @@ function menu_sliceFitting_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 image_processing_GUI(3);
 end
+
+
+% --------------------------------------------------------------------
+function menuCameraOptions_Callback(hObject, eventdata, handles)
+% hObject    handle to menuCameraOptions (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+brf_cameraSettings;
+end
