@@ -9,7 +9,11 @@ if isfield(data.raw, 'camera')
     if isfield(data.raw.camera, (camera_name))
         isEditCamera = 1;
         cam = data.raw.camera.(camera_name);
+    else
+        cam = [];
     end
+else
+    cam = [];
 end
 camera_struc.name = camera_name;
 
@@ -58,7 +62,7 @@ switch camera_name
         camera_struc.dipole_bend = fielddata(cam, 'dipole_bend', 1);
         % dipole_bend = (20.35 - 14) / 20.35;
         % camera_struc.energy_camera = 1;
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 1);
+        camera_struc.energy_camera = 1
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', 'Energy (GeV)');
         camera_struc.rotate_image = fielddata(cam, 'rotate_image', 1);
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);
@@ -71,18 +75,18 @@ switch camera_name
         camera_struc.default_ROI_Y = fielddata(cam, 'default_ROI_Y', 0);
         camera_struc.dipole_bend = fielddata(cam, 'dipole_bend', 1);
         camera_struc.rotate_image = fielddata(cam, 'rotate_image', 0);
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 1);
+        camera_struc.energy_camera = 1;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', 'Enegy (GeV)');        
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);
         camera_struc.sample_vert_width = fielddata(cam, 'sample_vert_width', 300);
         camera_struc.sample_horiz_width = fielddata(cam, 'sample_horiz_width', 300);
         camera_struc.noise_region = fielddata(cam, 'noise_region', 'bottom');
     case 'ELANEX'
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 0);
+        camera_struc.energy_camera = 0;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', 'Enegy (GeV)'); 
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);
     case 'CMOS_WLAN'
-        camera_struc.energy_camera = fielddata(cam, 'energy_cam', 1);
+        camera_struc.energy_camera = 1
         camera_struc.zero_Gev_px = fielddata(cam, 'zero_Gev_px', 282);
         camera_struc.default_ROI_Y = fielddata(cam, 'default_ROI_Y', 474);
         camera_struc.dipole_bend = fielddata(cam, 'dipole_bend', 1);
@@ -95,7 +99,7 @@ switch camera_name
         camera_struc.sample_horiz_width = fielddata(cam, 'sample_horiz_width', 100);
         camera_struc.noise_region = fielddata(cam, 'noise_region', 'bottom');
    case 'SYAG'
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 0);
+        camera_struc.energy_camera = 0;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', '');
         camera_struc.curr_lim = fielddata(cam, 'curr_lim', [0 1000]); % for SYAG  
         % Too lazy to write a program for horizontal lineout. Much easier to
@@ -103,12 +107,12 @@ switch camera_name
         camera_struc.rotate_image = fielddata(cam, 'rotate_image', 1);
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 1);
     case 'E224_Probe'
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 0);
+        camera_struc.energy_camera = 0;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', '');
         camera_struc.curr_lim = fielddata(cam, 'curr_lim', [0 1000]);
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);
     case 'CMOS_ELAN'
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 0);
+        camera_struc.energy_camera = 0;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', '');
         camera_struc.curr_lim = fielddata(cam, 'curr_lim', [0 1000]);
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);
@@ -117,7 +121,7 @@ switch camera_name
         camera_struc.sample_horiz_width = fielddata(cam, 'sample_horiz_width', 300);
         camera_struc.noise_region = fielddata(cam, 'noise_region', 'bottom');
     case 'BETAL'
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 0);
+        camera_struc.energy_camera = 0;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', '');
         camera_struc.curr_lim = fielddata(cam, 'curr_lim', [0 1000]);
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);
@@ -126,7 +130,7 @@ switch camera_name
         camera_struc.sample_horiz_width = fielddata(cam, 'sample_hoirz_width', 200);
         camera_struc.noise_region = fielddata(cam, 'noise_region', 'bottom');    
     case 'AX_IMG1'
-        camera_struc.energy_camera = fielddata(cam, 'energy_camera', 0);
+        camera_struc.energy_camera = 0;
         camera_struc.y_label_text = fielddata(cam, 'y_label_text', '');
         camera_struc.curr_lim = fielddata(cam, 'curr_lim', [0 1000]);
         camera_struc.rotate_noise = fielddata(cam, 'rotate_noise', 0);

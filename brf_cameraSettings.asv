@@ -115,15 +115,12 @@ function pushbutton_editVal_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_editVal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fieldName = getappdata(0, 'fieldName');
-if strcmp(fieldName, 'name') || strcmp(fieldName, 'energy_camera')
-    msgbox('You cannot edit this field.');
-else
-    set(handles.text_newVal, 'Visible', 'on');
-    set(handles.edit_enterVal, 'Visible', 'on');
-    set(handles.pushbutton_setVal, 'Visible', 'on');
-    set(hObject, 'Visible', 'off');
-end
+fieldType = get(handles.list
+set(handles.text_newVal, 'Visible', 'on');
+set(handles.edit_enterVal, 'Visible', 'on');
+set(handles.pushbutton_setVal, 'Visible', 'on');
+set(hObject, 'Visible', 'off');
+
 
 function edit_enterVal_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_enterVal (see GCBO)
