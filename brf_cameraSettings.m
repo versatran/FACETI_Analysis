@@ -165,9 +165,24 @@ if strcmp(choice, 'Yes')
     end
     setappdata(0, 'newVal', newVal);
     camera.(fieldName) = newVal;
-    data.raw.camera.(camera.name).(fieldName) = camera.(fieldName);
+    data.user.CameraConfig.(camera.name).(fieldName) = camera.(fieldName);
     % try to save it first to the drive
-    data_path = getappdata(0, 'data_path');
+    if isfield(data.VersionInfo, originalpath)
+        path = data.VersionInfo.originalpath;
+        filename = data.VersionInfo.originalfilename;
+        prefix = getappdata(0, 'prefix');
+        data_path = strcat(prefix, filesep, path, filesep,  filename);
+    else
+        prefix = getappdata(0, 'prefix');
+        expt_str = getappdata(0, 'expt_str');
+        year_str = getappdata(0, 'year_str');
+        date_str = getappdata(0, 'date_str');
+        dataset_str = getappdata(0, 'dataset_str');
+        filename = strcat(expt_str, '_', dataset_str,'_processed.mat'); 
+        data_path = strcat(prefix, filesep, expt_str, filesep, year_str, ...
+            filesep, date_str, filesep, expt_str, '_', dataset_str, ...
+            filesep, filename);
+    end
     save(data_path, 'data');
     setappdata(0, 'data', data);
     setappdata(0, 'camera', camera);

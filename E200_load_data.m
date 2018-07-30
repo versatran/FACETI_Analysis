@@ -62,7 +62,7 @@ function data = E200_load_data(pathstr, varargin)
                     fullpath = regexprep(dir_mid, 'nas.nas-li20-pm0.', ...
                         'processed_data');
                     [~, file_id] = strtok(fullpath, expstr);
-                    data.VersionInfo.originalpath = ['processed_data/' file_id];
+                    data.VersionInfo.originalpath = ['processed_data' filesep file_id];
                     return;
                 else
                     load(loadpath);
@@ -80,7 +80,7 @@ function data = E200_load_data(pathstr, varargin)
                 fullpath = regexprep(dir_mid, 'nas.nas-li20-pm0.', ...
                     'processed_data');
                 [~, file_id] = strtok(fullpath, expstr);
-                data.VersionInfo.originalpath = ['processed_data/' file_id];
+                data.VersionInfo.originalpath = ['processed_data' filesep file_id];
                 data.VersionInfo.loadrequest = pathstr;           
                 data = save_data(data,processed_file_path, false);
             end
@@ -95,7 +95,7 @@ function data = E200_load_data(pathstr, varargin)
                     fullpath = regexprep(dir_mid, 'nas.nas-li20-pm0.', ...
                         'processed_data');
                     [~, file_id] = strtok(fullpath, expstr);
-                    data.VersionInfo.originalpath = ['processed_data/' file_id];
+                    data.VersionInfo.originalpath = ['processed_data' filesep file_id];
                     return;
                 else
                     load(loadpath);
@@ -113,7 +113,7 @@ function data = E200_load_data(pathstr, varargin)
                     fullpath = regexprep(dir_mid, 'nas.nas-li20-pm0.', ...
                         'processed_data');
                     [~, file_id] = strtok(fullpath, expstr);
-                    data.VersionInfo.originalpath = ['processed_data/' file_id];
+                    data.VersionInfo.originalpath = ['processed_data' filesep file_id];
                     data.VersionInfo.loadrequest = pathstr;           
                     % REMOVED: (temporary) data = save_data_2014(data, processed_file_path, false);
                 end
@@ -128,7 +128,7 @@ function data = E200_load_data(pathstr, varargin)
                     fullpath = regexprep(dir_mid, 'nas.nas-li20-pm0.', ...
                         'processed_data');
                     [~, file_id] = strtok(fullpath, expstr);
-                    data.VersionInfo.originalpath = ['processed_data/' file_id];
+                    data.VersionInfo.originalpath = ['processed_data' filesep file_id];
                     return;
                 else
                     % path to save final mat files
@@ -148,7 +148,7 @@ function data = E200_load_data(pathstr, varargin)
             fullpath = regexprep(dir_mid, 'nas.nas-li20-pm0.', ...
                 'processed_data');
             [~, file_id] = strtok(fullpath, expstr);
-            data.VersionInfo.originalpath = ['processed_data/' file_id];
+            data.VersionInfo.originalpath = ['processed_data' filesep file_id];
             data.VersionInfo.loadrequest = pathstr;
 
             if ~isfs20_bool && ~already_exists
@@ -171,7 +171,7 @@ function data = E200_load_data(pathstr, varargin)
           end
           item_path = strcat(folder_string, folderName, filesep, ...
               folderName, '.mat');
-          data.user.(folderName) = load(item_path);
+          data.user.Machine.(folderName) = load(item_path);
        end
     end
     setappdata(0, 'data', data);

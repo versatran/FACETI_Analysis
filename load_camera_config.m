@@ -5,10 +5,10 @@ function camera_struc = load_camera_config(camera_name)
 % Note: Verifying the zero GeV_pixel is up to the user
 isEditCamera = 0;
 data = getappdata(0, 'data');
-if isfield(data.raw, 'camera')
-    if isfield(data.raw.camera, (camera_name))
+if isfield(data.user, 'CameraConfig')
+    if isfield(data.user.CameraConfig, (camera_name))
         isEditCamera = 1;
-        cam = data.raw.camera.(camera_name);
+        cam = data.user.CameraConfig.(camera_name);
     else
         cam = [];
     end

@@ -195,7 +195,7 @@ global UID
 
 if ~isempty(VALs)
     dat = struct('VALs', VALs, 'UIDs', UID);
-    data.user.(machine) = dat;
+    data.user.Machine.(machine) = dat;
     source_dir = getappdata(0, 'source_dir');
     server_str = getappdata(0, 'server_str');
     expt_str = getappdata(0, 'expt_str');
