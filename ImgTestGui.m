@@ -632,10 +632,15 @@ function menuCorrelate_Callback(~, ~, ~)
     % get parameter names for data set
     scalar_struc = data.raw.scalars;
     user_struc = data.user;
-    user = fieldnames(user_struc);
+    if isfield(user_struc, 'Machine');
+        machine_struc = user_struc.Machine;
+        machines = fieldnames(machine_struc);
+        num_users = length(machines);
+    else
+        num_users = 0;
+    end
     scalars = fieldnames(scalar_struc);
     num_parameters = length(scalars);
-    num_users = length(user);
     
     % create empty cell array for converted parameters with more user friendly 
     % definitions
@@ -653,9 +658,11 @@ function menuCorrelate_Callback(~, ~, ~)
     converted_parameters{num_parameters + 3, 1} = ...
         'excess_charge_UStoro1_DStoro1';
     
-    for i = num_parameters+3+1:num_parameters+3+num_users
-        index = i - num_parameters - 3;
-        converted_parameters{i} = eda_extract_data_for_list(user{index});
+    if isfield(user_struc, 'Machine')
+        for i = num_parameters+3+1:num_parameters+3+num_users
+            index = i - num_parameters - 3;
+            converted_parameters{i} = eda_extract_data_for_list(machines{index});
+        end
     end
     
     % prompt user to select x and y parameters

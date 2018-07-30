@@ -172,8 +172,9 @@ function data = E200_load_data(pathstr, varargin)
           item_path = strcat(folder_string, folderName, filesep, ...
               folderName, '.mat');
           data.user.Machine.(folderName) = load(item_path);
-          if isfield(data.user.Machine.(folderName), 'dat')
+          if isfield(data.user.Machine.(folderName), dat)
              data.user.Machine.(folderName) = data.user.Machine.(folderName).dat;
+        
           end
        end
     end

@@ -44,20 +44,20 @@ switch prmtr_extrct_name
         uid_vector=US_toro1_ID;
         prmtr_vector=DS_toro1_value-US_toro1_value; 
     otherwise
-        if ~(isfield(user_struc, prmtr_extrct_name))
+        if ~(isfield(user_struc.Machine, prmtr_extrct_name))
         %extract data method for rest of parameters
             scalars=fieldnames(data_struc.raw.scalars);
         else
-            scalars=fieldnames(user_struc);
+            scalars=fieldnames(user_struc.Machine);
             index_sort_parameter = index_sort_parameter - numel(fieldnames(data_struc.raw.scalars)) - 3;
         end
             prmtr_cell = scalars(index_sort_parameter);
             prmtr_str = prmtr_cell{1};
-           if ~(isfield(user_struc, prmtr_extrct_name))
+           if ~(isfield(user_struc.Machine, prmtr_extrct_name))
                uid_vector=scalar_struc.(prmtr_str).UID;
                prmtr_vector=scalar_struc.(prmtr_str).dat;
            else
-               uid_vector=user_struc.(prmtr_str).UIDs;
-               prmtr_vector=user_struc.(prmtr_str).VALs;
+               uid_vector=user_struc.Machine.(prmtr_str).UIDs;
+               prmtr_vector=user_struc.Machine.(prmtr_str).VALs;
            end
 end
