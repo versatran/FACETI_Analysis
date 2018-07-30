@@ -167,7 +167,7 @@ if strcmp(choice, 'Yes')
     camera.(fieldName) = newVal;
     data.user.CameraConfig.(camera.name).(fieldName) = camera.(fieldName);
     % try to save it first to the drive
-    if isfield(data.VersionInfo, originalpath)
+    if isfield(data.VersionInfo, 'originalpath')
         path = data.VersionInfo.originalpath;
         filename = data.VersionInfo.originalfilename;
         prefix = getappdata(0, 'prefix');
