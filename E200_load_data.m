@@ -157,25 +157,5 @@ function data = E200_load_data(pathstr, varargin)
         otherwise
             error('Shouldn''t get here!!!');
     end
-    folder_string = strcat(dir_beg, dir_mid, filesep, filename_rt, ...
-        '_files', filesep, 'user', filesep);
-    items = ls(folder_string);
-    user_struc = data.user;
-    [numItems, length] = size(items);
-    for i = 1:numItems
-       folderName = items(i, :);
-       if isempty(strfind(folderName, '.'))
-          start = strfind(folderName, ' ');
-          if ~isempty(start)
-            folderName = folderName(1:start-1);
-          end
-          item_path = strcat(folder_string, folderName, filesep, ...
-              folderName, '.mat');
-          data.user.Machine.(folderName) = load(item_path);
-          if isfield(data.user.Machine.(folderName), 'dat')
-             data.user.Machine.(folderName) = data.user.Machine.(folderName).dat;
-          end
-       end
-    end
-    setappdata(0, 'data', data);
+
 end

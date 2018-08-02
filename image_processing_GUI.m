@@ -381,9 +381,13 @@ function image_processing_GUI(varargin)
 end
 
 function export_counts(~,~,~)
-   labels = {'Export counts as: '};
+   labels = {'Export counts as: ', 'Export UIDs as: '};
    counts = getappdata(0, 'counts');
-   var = {'counts'};
-   vals = {counts};
+   data = getappdata(0, 'data');
+   camera = getappdata(0, 'camera');
+   camera = camera.name;
+   UIDs = data.raw.images.(camera).UID;
+   var = {'counts', 'count_UIDs'};
+   vals = {counts, UIDs};
    export2wsdlg(labels, var, vals);
 end
