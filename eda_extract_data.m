@@ -57,7 +57,7 @@ switch prmtr_extrct_name
                uid_vector=scalar_struc.(prmtr_str).UID;
                prmtr_vector=scalar_struc.(prmtr_str).dat;
            else
-               uid_vector=user_struc.(prmtr_str).UIDs;
-               prmtr_vector=user_struc.(prmtr_str).VALs;
+               uid_vector=user_struc.Machine.(prmtr_str).UIDs;
+               prmtr_vector=user_struc.Machine.(prmtr_str).VALs;
            end
 end

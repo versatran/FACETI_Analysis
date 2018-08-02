@@ -186,35 +186,40 @@ data = getappdata(0, 'data');
 machine = get(handles.impMachineName_edit, 'String');
 machine = string(machine);
 global VALs
-global UIDs
-source_dir = getappdata(0, 'source_dir');
-year_str = getappdata(0, 'year_str');
-date_str = getappdata(0, 'date_str');
-dataset_str = getappdata(0, 'dataset_str');
-expt_str = getappdata(0, 'expt_str');
-folderName = strcat(expt_str, '_', dataset_str);
-
-beginingPath = strcat(source_dir, 'processed_data', filesep, expt_str, filesep, year_str, filesep);
-middlePath = strcat(beginingPath, date_str, filesep);
-endPath = strcat(middlePath, folderName, filesep);
+global UID
 
 if ~isempty(VALs)
-    dat = struct('VALs', VALs, 'UIDs', UIDs);
-    data.user.Machine.(machine) = dat;
+    dat = struct('VALs', VALs, 'UIDs', UID);
+    data.user.(machine) = dat;
+    source_dir = getappdata(0, 'source_dir');
+    dataset_str = getappdata(0, 'dataset_str');
     
-    if 7 ~= exist(middlePath, 'dir')
-       mkdir(middlePath, date_str);
-    end
-    if 7 ~= exist(endPath, 'dir')
-        mkdir(endPath, folderName);
-    end
-    filename = strcat(folderName, '_processed.mat');
-    path = strcat(endPath, filesep, filename); 
+    path = data.VersionInfo.originalpath;
+    path = strcat(source_dir, path, da
     
-    save(path, 'data');
-    setappdata(0, 'data', data);
-    msg = 'Saved Successfully';
-    msgbox(msg);
+    if sze == 0
+            filename = strcat(folder_path, filesep, machine, filesep, ...
+                machine, '.mat');
+            save(filename, 'dat');
+            setappdata(0, 'data', data);
+            msg = 'Saved Successfully';
+    end
+    switch msg
+        case 'Directory already exists.'
+            question = strcat('There is an existing machine named ', ...
+                machine, '. Do you want to overwrite the data?');
+            choice = questdlg(question, 'File exists', 'Yes', 'No', 'No');
+            if strcmp('Yes', choice)
+                filename = strcat(folder_path, filesep, machine, filesep, ...
+                    machine, '.mat');
+                save(filename, 'dat');
+                setappdata(0, 'data', data);
+            end
+        case 'Saved Successfully'
+            msgbox('Saved Successfully');
+        otherwise
+            msgbox('ERROR: Something went wrong. Please try again');
+    end
 else
     
 end
