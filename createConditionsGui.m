@@ -199,19 +199,8 @@ middlePath = strcat(beginingPath, date_str, filesep);
 endPath = strcat(middlePath, folderName, filesep);
 
 if ~isempty(VALs)
-<<<<<<< HEAD
-    dat = struct('VALs', VALs, 'UIDs', UID);
-    data.user.Machine.(machine) = dat;
-    source_dir = getappdata(0, 'source_dir');
-    server_str = getappdata(0, 'server_str');
-    expt_str = getappdata(0, 'expt_str');
-    year_str = getappdata(0, 'year_str');
-    date_str = getappdata(0, 'date_str');
-    dataset_str = getappdata(0, 'dataset_str');
-=======
     dat = struct('VALs', VALs, 'UIDs', UIDs);
     data.user.Machine.(machine) = dat;
->>>>>>> fix-load-data2
     
     if 7 ~= exist(middlePath, 'dir')
        mkdir(middlePath, date_str);
