@@ -374,7 +374,7 @@ function image_processing_GUI(varargin)
         end
     end
     if processtype == 2
-        export_opt = uimenu(main_canvas, 'Text', 'Export');
+        export_opt = uimenu(main_canvas, 'Label', 'Export');
         uimenu(export_opt, 'Text', 'Export Counts', 'Callback', @export_counts);
     end
     uimenu(main_canvas, 'Text', 'Save as Movie', 'Callback', @save_video_Callback);
