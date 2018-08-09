@@ -74,18 +74,12 @@ function image_processing_GUI(varargin)
     
     
     %load dataset
-    prefix = getappdata(0, 'prefix');
     num_stacks = getappdata(0, 'num_stacks');
-    stack_text = getappdata(0, 'stack_text');
-    bend_struc = getappdata(0, 'bend_struc');
-    if isappdata(0, 'correlated_UIDs')
-       image_struc = getappdata(0, 'correlated_images');
-       num_images = image_struc.N_IMGS;
-    else
-        num_images = getappdata(0, 'num_images');
-        image_struc = getappdata(0, 'image_struc');
-    end
-   
+    image_struc = getappdata(0, 'image_struc
+    [prefix,data,num_stacks,image_struc,num_images,stack_text,func_name,...
+    bend_struc]= nvn_load_data(expt_str,source_dir,server_str,date_str...
+    ,dataset_str,camera.name);
+    
 %Go over scan steps, if no scan, only one loop iteration
     for i=1:num_stacks
         if camera.energy_camera 
@@ -351,12 +345,7 @@ function image_processing_GUI(varargin)
                 otherwise
                     error('haven''t written this part yet')
             end
-            if isappdata(0, 'correlated_images')
-                image_num = num2str(image_struc.correlated_struc.ORG_IDX(j));
-            else
-                image_num = int2str(j);
-            end
-            text(.02*display_width+width_start,.02*display_height+height_start,['Shot # ' image_num],'color','w','backgroundcolor','b');
+            text(.02*display_width+width_start,.02*display_height+height_start,['Shot # ' int2str(j)],'color','w','backgroundcolor','b');
             if exist('stack_text','var')
                 text(.02*display_width+width_start,.06*display_height+height_start,stack_text{i},'color','w','backgroundcolor','blue');
             end
