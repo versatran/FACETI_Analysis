@@ -14,19 +14,31 @@ function newUIDs = brf_get_UIDs(varargin)
     %initializes the parameters
     parameters = varargin{1};
     condition = varargin{2};
-    min = condition{2};
-    max = condition{3};
+
     data = getappdata(0, 'data');
     param_str = string(parameters);
     
     % pulls the index in where the condition is stored in the data's
     % parameters
     
-    index = find(param_str==condition{1});
+    if iscell(condition)
+        index = find(param_str==condition{1});
+        condition_name = condition{1};
+    else
+        index = find(param_str==condition);
+        condition_name = condition;
+    end
     
     % gets the UIDs and values for that condition
-    [UIDs, values] = eda_extract_data(data, condition{1}, index);
+    [UIDs, values] = eda_extract_data(data, condition_name, index);
     
+    if iscell(condition)
+        minimum = condition{2};
+        maximum = condition{3};
+    else
+        minimum = min(values);
+        maximum = max(values);
+    end
     % this is where chained hashing takes place
     key = 1999;
     a = msgbox('Initializing matrix...');
@@ -45,7 +57,7 @@ function newUIDs = brf_get_UIDs(varargin)
     for i = 1:length(values)
         % checks if the value falls inbetween the set min and max of the
         % condition
-        if values(i) > min && values(i) < max
+        if values(i) > minimum && values(i) < maximum
             % hashes and places in possition according to the remainder
             UID_index = mod(UIDs(i), key) + 1;
             list_index = newUIDs{UID_index, 1, 1} + 1;
