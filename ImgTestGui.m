@@ -1156,3 +1156,12 @@ function menuCorrelateImages_Callback(hObject, eventdata, handles)
     setappdata(0, 'correlated_UIDs', x_UID);
     brf_save_correlated_images;
 end
+
+
+% --- Executes on button press in pushExportImagesAsMovie.
+function pushExportImagesAsMovie_Callback(hObject, eventdata, handles)
+% hObject    handle to pushExportImagesAsMovie (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+image_processing_GUI(4);
+end
