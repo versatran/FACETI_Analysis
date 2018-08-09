@@ -231,6 +231,12 @@ function pushLoadDataSet_Callback(~, ~, ~)
     % inform user that camera selection dialog will pop up soon
     m1 = msgbox('Loading data, one moment please...');
 
+    if isappdata(0, 'correlated_images')
+        rmappdata(0, 'correlated_images');
+    end
+    if isappdata(0, 'correlated_UIDs')
+        rmappdata(0, 'correlated_UIDs');
+    end
     % get parts of path input by user from textboxes
     source_dir = getappdata(0, 'source_dir');
     server_str = getappdata(0, 'server_str');
@@ -626,209 +632,7 @@ end
 % This function allows you to create a correlation plot of any two
 % parameters in dataset. You can sort by the x parameter chosen
 function menuCorrelate_Callback(~, ~, ~)
-    dataset_str = getappdata(0, 'dataset_str');
-    data = getappdata(0, 'data');
-
-    % get parameter names for data set
-    scalar_struc = data.raw.scalars;
-    user_struc = data.user;
-    if isfield(user_struc, 'Machine');
-        machine_struc = user_struc.Machine;
-        machines = fieldnames(machine_struc);
-        num_users = length(machines);
-    else
-        num_users = 0;
-    end
-    scalars = fieldnames(scalar_struc);
-    num_parameters = length(scalars);
-    
-    % create empty cell array for converted parameters with more user friendly 
-    % definitions
-    
-    converted_parameters = cell(num_parameters + num_users + 3,1);
-    
-    % convert to user friendly defined parameters
-    for i = 1:num_parameters
-            converted_parameters{i} = eda_extract_data_for_list(scalars{i});
-    end
-    
-    % these are calculated in nvn_extract_data, they are not parameters in data
-    converted_parameters{num_parameters + 1, 1} = 'excess_charge_USBPM1_DSBPM1';
-    converted_parameters{num_parameters + 2, 1} = 'excess_charge_USBPM1_DSBPM2';
-    converted_parameters{num_parameters + 3, 1} = ...
-        'excess_charge_UStoro1_DStoro1';
-    
-    if isfield(user_struc, 'Machine')
-        for i = num_parameters+3+1:num_parameters+3+num_users
-            index = i - num_parameters - 3;
-            converted_parameters{i} = eda_extract_data_for_list(machines{index});
-        end
-    end
-    
-    % prompt user to select x and y parameters
-    [s, ~] = listdlg('PromptString', 'Select x-axis parameter', ...
-        'SelectionMode', 'single', 'ListString', converted_parameters);
-    x_param = converted_parameters{s};
-    [a, ~] = listdlg('PromptString', 'Select y-axis parameter', ...
-        'SelectionMode', 'single', 'ListString', converted_parameters);
-    y_param = converted_parameters{a};
-    
-    setappdata(0, 'converted_parameters', converted_parameters);
-    % get x and y values
-    [x_UID, x_values] = eda_extract_data(data, x_param, s);
-    [y_UID, y_values] = eda_extract_data(data, y_param, a);
-
-    % ask to sort x parameter. If selected, sorts x parameter and rearranges y
-    % parameter values following the sorted indexes
-    c = correlate_plot(x_values, x_UID, y_values, y_UID);
-    % creates the "linecut" option in the taskbar
-    linecut_option = uimenu(c, 'Label', 'Linecut');
-    uimenu(linecut_option, 'Label', 'Apply Current Conditions', 'Callback', @apply_Callback);
-    uimenu(linecut_option, 'Label', 'Save Conditions', 'Callback', @openSave);
-    uimenu(linecut_option, 'Label', 'Load Conditions', 'Callback', @openLoad);
-    uimenu(linecut_option, 'Label', 'View Conditions', 'Separator', 'on', 'Callback', @openViewConditions);
-    uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);       
-    item_deleteConditions = uimenu(linecut_option, 'Label', 'Delete');
-    uimenu(item_deleteConditions, 'Label', 'Delete All Conditions', ... 
-        'Callback', @deleteAll_Callback);
-    uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
-    
-    function c = correlate_plot(x_val, xuid, y_val, yuid)
-        sort_q = questdlg('Would you like your x_parameter sorted?');
-
-        switch sort_q
-            case 'Yes'
-                % make the sort vector from x parameter
-                unique_sort_id = unique(xuid);
-                if length(unique_sort_id) ~= length(xuid)
-                    error(['repetative UIDs exist in the sort dataset. Program ' ...
-                        'terminated']);
-                end
-                [Y1, I1] = sort(x_val);        
-                sorted_UID = xuid(I1);
-
-                % match the UIDs with the parameter values. This discards parameter
-                % values that do not have an associated shot to create vectors of
-                % same length
-                 j = 1;
-                 [~, index_y_UID_matched, index_sorted_UID] = ...
-                     intersect(sorted_UID, yuid(j, :), 'stable');
-
-                matched_y_values(j, :) = y_val(j, index_sorted_UID);    
-                revised_UID(j, :) = sorted_UID(index_y_UID_matched);
-                sorted_x_values(j, :) = Y1(index_y_UID_matched);
-
-                % creates plot
-                c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
-                    y_param ' ' dataset_str]);
-                % linecutOptions('reset');
-            
-                set(c, 'color', [1,1,1]);
-                plot(sorted_x_values, matched_y_values);
-                plot_title = title([x_param ' vs. ' y_param]);
-                plot_xlabel = xlabel(x_param);
-                plot_ylabel = ylabel(y_param);
-                set(plot_xlabel, 'Interpreter', 'none');
-                set(plot_title, 'Interpreter', 'none');
-                set(plot_ylabel, 'Interpreter', 'none');
-        otherwise
-                % creates non-sorted plot. The lengths of these parameters are
-                % longer than the number of shots taken for the dataset
-                c = figure('Name', ['Correlation Plot of ' x_param ' with ' ...
-                    y_param ' ' dataset_str]);
-                set(c, 'color', [1,1,1]);
-                scatter(x_val, y_val);
-                plot_title = title([x_param ' vs. ' y_param]);
-                plot_xlabel = xlabel(x_param);
-                plot_ylabel = ylabel(y_param);
-                set(plot_xlabel, 'Interpreter', 'none');
-                set(plot_title, 'Interpreter', 'none');
-                set(plot_ylabel, 'Interpreter', 'none');
-        end
-        saveFigure_option = uimenu(c, 'Label', 'Save');
-        setappdata(0, 'x_param', x_param);
-        uimenu(saveFigure_option, 'Label', 'Save Conditions', 'Callback', @openViewConditions);
-    end
-
-    function apply_Callback(~,~,~)
-        [new_x_values, new_x_UID] = linecutOptions('get', x_UID, x_values, converted_parameters);
-        new_x_values = cell2mat(new_x_values);
-        new_x_UID = cell2mat(new_x_UID);
-        [new_y_values, new_y_UID] = linecutOptions('get', y_UID, y_values, converted_parameters);
-        new_y_values = cell2mat(new_y_values);
-        new_y_UID = cell2mat(new_y_UID);
-        setappdata(0, 'correlated_x', new_x_values);
-        setappdata(0, 'correlated_y', new_y_values);
-        setappdata(0, 'correlated_UIDs', new_x_UID);
-        c = correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);    
-        uimenu(c, 'Label', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
-    end
-
-    function openAddConditions(~,~,~)
-        linecutOptions('add', converted_parameters);
-    end
-    function openSave(~,~,~)
-        linecutOptions('save');
-    end
-    function openLoad(~,~,~)
-        linecutOptions('load');
-    end
-    function deleteAll_Callback(~,~,~)
-        linecutOptions('deleteAll');
-    end
-    function openViewConditions(~,~,~)
-        linecutOptions('view');
-    end
-    function deleteOne(~,~,~)
-        linecutOptions('delete');
-    end
-end
-
-function menuCreateCondition_Callback(~, ~, ~)
-    data = getappdata(0, 'data');
-
-    % get parameter names for data set
-    scalar_struc = data.raw.scalars;
-    scalars = fieldnames(scalar_struc);
-    num_parameters = length(scalars);
-    
-    % create empty cell array for converted parameters with more user friendly 
-    % definitions
-    
-    converted_parameters = cell(num_parameters + 3,1);
-    
-    % convert to user friendly defined parameters
-    for i = 1:num_parameters
-            converted_parameters{i} = eda_extract_data_for_list(scalars{i});
-    end
-    
-    % these are calculated in nvn_extract_data, they are not parameters in data
-    converted_parameters{num_parameters + 1, 1} = 'excess_charge_USBPM1_DSBPM1';
-    converted_parameters{num_parameters + 2, 1} = 'excess_charge_USBPM1_DSBPM2';
-    converted_parameters{num_parameters + 3, 1} = ...
-        'excess_charge_UStoro1_DStoro1';
-    setappdata(0, 'converted_param', converted_parameters);
-    setappdata(0, 'param', scalars);
-    createConditionsGui;
-end
-
-
-
-function serverPopUpMenu_Callback(hObject, eventdata, handles)
-    expPopUpMenu = handles.experimentPopUpMenu;
-    source_dir = getappdata(0, 'source_dir');
-    
-    
-    values = get(hObject, 'String');
-    server_str = ['nas' filesep values{get(hObject, 'Value')} filesep];
-    setappdata(0, 'server_str', server_str);
-    set(expPopUpMenu, 'String', getSubDirectoryList([source_dir server_str]));
-    set(expPopUpMenu, 'enable', 'on');
-    set(expPopUpMenu, 'Value', 1);
-    experimentPopUpMenu_Callback(handles.experimentPopUpMenu, eventdata, ...
-        handles);
-    %deleting the above line of code will properly grab a path but will not
-    %load dataset
+   
 end
 
 
@@ -1120,4 +924,235 @@ function menuCameraOptions_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 brf_cameraSettings;
+end
+
+
+% --------------------------------------------------------------------
+function menuCorrelateData_Callback(hObject, eventdata, handles) 
+    dataset_str = getappdata(0, 'dataset_str');
+    data = getappdata(0, 'data');
+
+    % get parameter names for data set
+    scalar_struc = data.raw.scalars;
+    user_struc = data.user;
+    if isfield(user_struc, 'Machine');
+        machine_struc = user_struc.Machine;
+        machines = fieldnames(machine_struc);
+        num_users = length(machines);
+    else
+        num_users = 0;
+    end
+    scalars = fieldnames(scalar_struc);
+    num_parameters = length(scalars);
+    
+    % create empty cell array for converted parameters with more user friendly 
+    % definitions
+    
+    converted_parameters = cell(num_parameters + num_users + 3,1);
+    
+    % convert to user friendly defined parameters
+    for i = 1:num_parameters
+            converted_parameters{i} = eda_extract_data_for_list(scalars{i});
+    end
+    
+    % these are calculated in nvn_extract_data, they are not parameters in data
+    converted_parameters{num_parameters + 1, 1} = 'excess_charge_USBPM1_DSBPM1';
+    converted_parameters{num_parameters + 2, 1} = 'excess_charge_USBPM1_DSBPM2';
+    converted_parameters{num_parameters + 3, 1} = ...
+        'excess_charge_UStoro1_DStoro1';
+    
+    if isfield(user_struc, 'Machine')
+        for i = num_parameters+3+1:num_parameters+3+num_users
+            index = i - num_parameters - 3;
+            converted_parameters{i} = eda_extract_data_for_list(machines{index});
+        end
+    end
+    
+    % prompt user to select x and y parameters
+    [s, ~] = listdlg('PromptString', 'Select x-axis parameter', ...
+        'SelectionMode', 'single', 'ListString', converted_parameters);
+    x_param = converted_parameters{s};
+    [a, ~] = listdlg('PromptString', 'Select y-axis parameter', ...
+        'SelectionMode', 'single', 'ListString', converted_parameters);
+    y_param = converted_parameters{a};
+    
+    setappdata(0, 'converted_parameters', converted_parameters);
+    % get x and y values
+    [x_UID, x_values] = eda_extract_data(data, x_param, s);
+    [y_UID, y_values] = eda_extract_data(data, y_param, a);
+    setappdata(0, 'x_param', x_param);
+    setappdata(0, 'y_param', y_param);
+    % ask to sort x parameter. If selected, sorts x parameter and rearranges y
+    % parameter values following the sorted indexes
+    c = correlate_plot(x_values, x_UID, y_values, y_UID);
+    setappdata(0, 'correlated_x', x_values);
+    setappdata(0, 'correlated_UIDs', x_UID);
+    brf_save_correlated_images;
+    % creates the "linecut" option in the taskbar
+    linecut_option = uimenu(c, 'Label', 'Linecut');
+    uimenu(linecut_option, 'Label', 'Apply Current Conditions', 'Callback', @apply_Callback);
+    uimenu(linecut_option, 'Label', 'Save Conditions', 'Callback', @openSave);
+    uimenu(linecut_option, 'Label', 'Load Conditions', 'Callback', @openLoad);
+    uimenu(linecut_option, 'Label', 'View Conditions', 'Separator', 'on', 'Callback', @openViewConditions);
+    uimenu(linecut_option,'Label','Add Conditions', 'Callback', @openAddConditions);       
+    item_deleteConditions = uimenu(linecut_option, 'Label', 'Delete');
+    uimenu(item_deleteConditions, 'Label', 'Delete All Conditions', ... 
+        'Callback', @deleteAll_Callback);
+    uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
+
+    function apply_Callback(~,~,~)
+        [new_x_values, new_x_UID] = linecutOptions('get', x_UID, x_values, converted_parameters);
+        new_x_values = cell2mat(new_x_values);
+        new_x_UID = cell2mat(new_x_UID);
+        [new_y_values, new_y_UID] = linecutOptions('get', y_UID, y_values, converted_parameters);
+        new_y_values = cell2mat(new_y_values);
+        new_y_UID = cell2mat(new_y_UID);
+        setappdata(0, 'correlated_x', new_x_values);
+        setappdata(0, 'correlated_y', new_y_values);
+        setappdata(0, 'correlated_UIDs', new_x_UID);
+        c = correlate_plot(new_x_values, new_x_UID, new_y_values, new_y_UID);    
+        uimenu(c, 'Label', 'View Correlated Images', 'Callback', @brf_save_correlated_images);
+    end
+
+    function openAddConditions(~,~,~)
+        linecutOptions('add', converted_parameters);
+    end
+    function openSave(~,~,~)
+        linecutOptions('save');
+    end
+    function openLoad(~,~,~)
+        linecutOptions('load');
+    end
+    function deleteAll_Callback(~,~,~)
+        linecutOptions('deleteAll');
+    end
+    function openViewConditions(~,~,~)
+        linecutOptions('view');
+    end
+    function deleteOne(~,~,~)
+        linecutOptions('delete');
+    end
+end
+
+function menuCreateCondition_Callback(~, ~, ~)
+    data = getappdata(0, 'data');
+
+    % get parameter names for data set
+    scalar_struc = data.raw.scalars;
+    scalars = fieldnames(scalar_struc);
+    num_parameters = length(scalars);
+    
+    % create empty cell array for converted parameters with more user friendly 
+    % definitions
+    
+    converted_parameters = cell(num_parameters + 3,1);
+    
+    % convert to user friendly defined parameters
+    for i = 1:num_parameters
+            converted_parameters{i} = eda_extract_data_for_list(scalars{i});
+    end
+    
+    % these are calculated in nvn_extract_data, they are not parameters in data
+    converted_parameters{num_parameters + 1, 1} = 'excess_charge_USBPM1_DSBPM1';
+    converted_parameters{num_parameters + 2, 1} = 'excess_charge_USBPM1_DSBPM2';
+    converted_parameters{num_parameters + 3, 1} = ...
+        'excess_charge_UStoro1_DStoro1';
+    setappdata(0, 'converted_param', converted_parameters);
+    setappdata(0, 'param', scalars);
+    createConditionsGui;
+end
+
+
+
+function serverPopUpMenu_Callback(hObject, eventdata, handles)
+    expPopUpMenu = handles.experimentPopUpMenu;
+    source_dir = getappdata(0, 'source_dir');
+    
+    
+    values = get(hObject, 'String');
+    server_str = ['nas' filesep values{get(hObject, 'Value')} filesep];
+    setappdata(0, 'server_str', server_str);
+    set(expPopUpMenu, 'String', getSubDirectoryList([source_dir server_str]));
+    set(expPopUpMenu, 'enable', 'on');
+    set(expPopUpMenu, 'Value', 1);
+    experimentPopUpMenu_Callback(handles.experimentPopUpMenu, eventdata, ...
+        handles);
+    %deleting the above line of code will properly grab a path but will not
+    %load dataset
+end
+
+
+% --------------------------------------------------------------------
+function menuCorrelateImages_Callback(hObject, eventdata, handles)
+% hObject    handle to menuCorrelateImages (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    data = getappdata(0, 'data');
+
+    % get parameter names for data set
+    scalar_struc = data.raw.scalars;
+    user_struc = data.user;
+    if isfield(user_struc, 'Machine');
+        machine_struc = user_struc.Machine;
+        machines = fieldnames(machine_struc);
+        num_users = length(machines);
+    else
+        num_users = 0;
+    end
+    scalars = fieldnames(scalar_struc);
+    num_parameters = length(scalars);
+    
+    % create empty cell array for converted parameters with more user friendly 
+    % definitions
+    
+    converted_parameters = cell(num_parameters + num_users + 3,1);
+    
+    % convert to user friendly defined parameters
+    for i = 1:num_parameters
+            converted_parameters{i} = eda_extract_data_for_list(scalars{i});
+    end
+    
+    % these are calculated in nvn_extract_data, they are not parameters in data
+    converted_parameters{num_parameters + 1, 1} = 'excess_charge_USBPM1_DSBPM1';
+    converted_parameters{num_parameters + 2, 1} = 'excess_charge_USBPM1_DSBPM2';
+    converted_parameters{num_parameters + 3, 1} = ...
+        'excess_charge_UStoro1_DStoro1';
+    
+    if isfield(user_struc, 'Machine')
+        for i = num_parameters+3+1:num_parameters+3+num_users
+            index = i - num_parameters - 3;
+            converted_parameters{i} = eda_extract_data_for_list(machines{index});
+        end
+    end
+    
+    camera_names = fieldnames(data.raw.images);
+    % prompt user to select x and y parameters
+    [s, ~] = listdlg('PromptString', 'Select x-axis parameter', ...
+        'SelectionMode', 'single', 'ListString', converted_parameters);
+    x_param = converted_parameters{s};
+    [a, ~] = listdlg('PromptString', 'Select y-axis parameter', ...
+        'SelectionMode', 'single', 'ListString', camera_names);
+    y_param = camera_names{a};
+    setappdata(0, 'x_param', x_param);
+    setappdata(0, 'y_param', y_param);
+    
+    setappdata(0, 'converted_parameters', converted_parameters);
+    % get x and y values
+    [x_UID, x_values] = eda_extract_data(data, x_param, s);
+    num_of_y_vals = data.raw.images.(camera_names{a}).N_IMGS;
+    for i = 1:num_of_y_vals
+        y_values(i) = i;
+    end
+    
+    y_UID = data.raw.images.(camera_names{a}).UID;
+
+    % ask to sort x parameter. If selected, sorts x parameter and rearranges y
+    % parameter values following the sorted indexes
+    
+    c = correlate_plot(x_values, x_UID, y_values, y_UID);
+    camera = load_camera_config(y_param);
+    setappdata(0, 'camera', camera);
+    setappdata(0, 'correlated_x', x_values);
+    setappdata(0, 'correlated_UIDs', x_UID);
+    brf_save_correlated_images;
 end
