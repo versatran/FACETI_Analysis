@@ -1146,9 +1146,7 @@ function menuCorrelateImages_Callback(hObject, eventdata, handles)
     
     y_UID = data.raw.images.(camera_names{a}).UID;
 
-    % ask to sort x parameter. If selected, sorts x parameter and rearranges y
-    % parameter values following the sorted indexes
-    
+    [x_values, x_UID, y_values, y_UID] = brf_match_UIDs(x_values, x_UID, y_values, y_UID);
     c = correlate_plot(x_values, x_UID, y_values, y_UID);
     camera = load_camera_config(y_param);
     setappdata(0, 'camera', camera);
