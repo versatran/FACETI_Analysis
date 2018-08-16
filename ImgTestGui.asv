@@ -105,6 +105,8 @@ function ImgTestGui_OpeningFcn(hObject, eventdata, handles, varargin)
     set(handles.figureImgTestGui, 'Resize', 'on');
     set(handles.figureImgTestGui, 'Position', [30 19.2308 150.8 45]);
 
+    % Disables menu functions until the dataset is loaded
+    options_menu = handles.
     % Update handles structure
     guidata(hObject, handles);
 end
@@ -231,7 +233,12 @@ function pushLoadDataSet_Callback(~, ~, ~)
     % inform user that camera selection dialog will pop up soon
     m1 = msgbox('Loading data, one moment please...');
 
-
+    if isappdata(0, 'correlated_images')
+        rmappdata(0, 'correlated_images');
+    end
+    if isappdata(0, 'correlated_UIDs')
+        rmappdata(0, 'correlated_UIDs');
+    end
     % get parts of path input by user from textboxes
     source_dir = getappdata(0, 'source_dir');
     server_str = getappdata(0, 'server_str');
@@ -239,18 +246,6 @@ function pushLoadDataSet_Callback(~, ~, ~)
     date_str = getappdata(0, 'date_str');
     dataset_str = getappdata(0, 'dataset_str');
 
-    %deletes all app data loaded previously to reset
-    appdata = getappdata(0);
-    fns = fieldnames(appdata);
-    for ii = 1:numel(fns)
-        rmappdata(0,fns{ii});
-    end
-    
-    setappdata(0, 'source_dir', source_dir);
-    setappdata(0, 'server_str', server_str);
-    setappdata(0, 'expt_str', expt_str);
-    setappdata(0, 'date_str', date_str);
-    setappdata(0, 'dataset_str', data
     % creates the path to dataset from user input
     data_path = [source_dir server_str expt_str filesep date_str(1:4) ...
         filesep date_str filesep expt_str '_' dataset_str filesep expt_str ...
@@ -1153,13 +1148,20 @@ function menuCorrelateImages_Callback(hObject, eventdata, handles)
     
     y_UID = data.raw.images.(camera_names{a}).UID;
 
-    % ask to sort x parameter. If selected, sorts x parameter and rearranges y
-    % parameter values following the sorted indexes
-    
+    [x_values, x_UID, y_values, y_UID] = brf_match_UIDs(x_values, x_UID, y_values, y_UID);
     c = correlate_plot(x_values, x_UID, y_values, y_UID);
     camera = load_camera_config(y_param);
     setappdata(0, 'camera', camera);
     setappdata(0, 'correlated_x', x_values);
     setappdata(0, 'correlated_UIDs', x_UID);
     brf_save_correlated_images;
+end
+
+
+% --- Executes on button press in pushExportImagesAsMovie.
+function pushExportImagesAsMovie_Callback(hObject, eventdata, handles)
+% hObject    handle to pushExportImagesAsMovie (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+image_processing_GUI(4);
 end

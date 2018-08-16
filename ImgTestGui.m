@@ -105,6 +105,11 @@ function ImgTestGui_OpeningFcn(hObject, eventdata, handles, varargin)
     set(handles.figureImgTestGui, 'Resize', 'on');
     set(handles.figureImgTestGui, 'Position', [30 19.2308 150.8 45]);
 
+    % Disables menu functions until the dataset is loaded
+    set(handles.menuOperations, 'Enable', 'off');
+    set(handles.menuSettings, 'Enable', 'off');
+    set(handles.menuView, 'Enable', 'off');
+    
     % Update handles structure
     guidata(hObject, handles);
 end
@@ -227,16 +232,17 @@ end
 %   handles    structure with handles and user data (see GUIDATA)
 
 
-function pushLoadDataSet_Callback(~, ~, ~)
+function pushLoadDataSet_Callback(~, ~, handles)
     % inform user that camera selection dialog will pop up soon
     m1 = msgbox('Loading data, one moment please...');
-
+    
     if isappdata(0, 'correlated_images')
         rmappdata(0, 'correlated_images');
     end
     if isappdata(0, 'correlated_UIDs')
         rmappdata(0, 'correlated_UIDs');
     end
+    
     % get parts of path input by user from textboxes
     source_dir = getappdata(0, 'source_dir');
     server_str = getappdata(0, 'server_str');
@@ -256,13 +262,18 @@ function pushLoadDataSet_Callback(~, ~, ~)
     setappdata(0, 'dataorig', data);
 
     cameraNames();
-    
+    waitfor(cameraNames())
     % close the message box if it is still open
     try
         close(m1);
     catch
         % message box was closed by user - do not generate an error
     end
+    
+    set(handles.menuOperations, 'Enable', 'on');
+    set(handles.menuSettings, 'Enable', 'on');
+    set(handles.menuView, 'Enable', 'on');
+    set(handles.menu_imageProcessing, 'Enable', 'on');
 end
 
 % This function creates a waterfall plot from sorted lineouts based on a
@@ -984,6 +995,7 @@ function menuCorrelateData_Callback(hObject, eventdata, handles)
     setappdata(0, 'y_param', y_param);
     % ask to sort x parameter. If selected, sorts x parameter and rearranges y
     % parameter values following the sorted indexes
+       [x_values, x_UID, y_values, y_UID] = brf_match_UIDs(x_values, x_UID, y_values, y_UID);
     c = correlate_plot(x_values, x_UID, y_values, y_UID);
     setappdata(0, 'correlated_x', x_values);
     setappdata(0, 'correlated_UIDs', x_UID);
@@ -999,7 +1011,8 @@ function menuCorrelateData_Callback(hObject, eventdata, handles)
     uimenu(item_deleteConditions, 'Label', 'Delete All Conditions', ... 
         'Callback', @deleteAll_Callback);
     uimenu(item_deleteConditions, 'Label', 'Delete a Condition', 'Callback', @deleteOne);
-
+    
+    set(handles.menu_imageProcessing, 'Enable', 'off');
     function apply_Callback(~,~,~)
         [new_x_values, new_x_UID] = linecutOptions('get', x_UID, x_values, converted_parameters);
         new_x_values = cell2mat(new_x_values);
@@ -1153,6 +1166,7 @@ function menuCorrelateImages_Callback(hObject, eventdata, handles)
     setappdata(0, 'correlated_x', x_values);
     setappdata(0, 'correlated_UIDs', x_UID);
     brf_save_correlated_images;
+    set(handles.menu_imageProcessing, 'Enable', 'off');
 end
 
 
